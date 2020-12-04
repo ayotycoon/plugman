@@ -1,3 +1,4 @@
+import { getId } from './index';
 import { BehaviourSubject } from './helpers';
 
 
@@ -5,6 +6,39 @@ let data: any[] = []
 const idToRequestHash: any = {
 
 }
+const defaultCollection = [
+    {
+        id: getId(),
+        name: 'introduction to emit requests',
+        isFolder: false,
+        event: "message",
+        type: "emit",
+        emitBody: `{"foo": "bar}`
+    },
+    {
+        id: getId(),
+        name: 'introduction to listen requests',
+        isFolder: false,
+        event: "message",
+        type: "listen",
+        listenBody: `{"foo": "bar}`
+    },
+    {
+        id: getId(),
+        name: 'Yep ! a folder 😉',
+        isFolder: true,
+        children:[
+            {
+                id: getId(),
+                name: 'i am a request in a folder',
+                isFolder: false,
+                event: "message_listener",
+                type: "listen",
+                listenBody: `{"foo": "bar}`
+            },
+        ],
+    }
+]
 
 
 export class CollectionsService {
@@ -13,7 +47,7 @@ export class CollectionsService {
 
     }
     public static load() {
-        data = JSON.parse(localStorage.getItem('storage') || "[]")
+        data = JSON.parse(localStorage.getItem('storage') || JSON.stringify(defaultCollection))
 
     }
 

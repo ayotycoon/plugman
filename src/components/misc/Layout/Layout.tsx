@@ -195,7 +195,7 @@ function Layout(props: any) {
             sendToCollectionObs.next({ request, tree })
 
             }catch(e){
-                
+
             }
 
         }
@@ -441,16 +441,16 @@ function Layout(props: any) {
                         {activeNavIndex== 0 &&
                         
                             <div>
-                            <div className='pr-2 pl-2 pb-1 pt-1  border-bottom'>
-                                <span onClick={() => {
+                            <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
+                                <span title='new request' onClick={() => {
                                     onCollectionEvent('create-request', '/');
                                 }} className='cursor mr-2'><i className='fa fa-file-medical'></i></span>
-                                <span onClick={() => {
+                                <span title='new folder' onClick={() => {
                                     onCollectionEvent('create-folder', '/');
                                 }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
                             </div>
                             <div 
-                            style={{ height: 'calc(100vh - 300px)', overflowY: 'auto' }}>
+                            style={{ height: 'calc(100vh - 350px)', overflowY: 'auto' }}>
                         <div className='pt-2' style={{ marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', overflow: 'auto' }}>
                             {contextMenu && <ContextMenu />}
                          
@@ -618,11 +618,11 @@ setSocketUrl(e.target.value)
                         <Switch>
 
                             <Route exact path="/">
-                                <Redirect to='/dashboard' />
+                                <Redirect to='/request' />
                             </Route>
 
-                            <Route exact path="/dashboard" component={Dashboard} />
-                            <Route exact path="/Request" component={Request} />
+                           
+                            <Route exact path="/request" component={Request} />
 
                             <Redirect path='**' to='/404' />
                         </Switch>

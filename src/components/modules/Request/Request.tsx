@@ -295,13 +295,23 @@ function Request(props: any) {
                             display:'flex',
                            alignItems: 'center',
                       
-                            justifyContent: 'center'
+                        //    justifyContent: 'center'
                         }}>
                             
-                                <div className='h4 change-in-dark-1 text-center'>
-                                <i className='fa fa-file'></i>
+                                <div className='h4 change-in-dark-1 p-4'>
+                              
+                                Open a Request
                                 <br />
-                                Open a file
+                                <br />
+                                  <b>How to use</b>
+                                <ol>
+                                    <li>Connect socket url</li>
+                                    <li>Make an emit request</li>
+                                        <li>create a listen request</li>
+                                    <li>Receive the request from your server and emit back the listen event</li>
+                                      
+                                </ol>
+                              
                                 </div>
                             </div>
                             }
