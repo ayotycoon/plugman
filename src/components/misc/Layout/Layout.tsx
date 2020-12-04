@@ -301,13 +301,13 @@ function Layout(props: any) {
         if (tree) {
             lastFolderRef.current = function (e: any) {
                 setLastSelectedFolderTree('/')
-                lastFolderCB()
+         
                 
             } 
 
             setTimeout(()=> {
                 window.addEventListener('click', lastFolderRef.current)
-            },500)
+            },100)
           
         } else {
             window.removeEventListener('click', lastFolderRef.current)
@@ -415,10 +415,13 @@ function Layout(props: any) {
                             <div className='d-inline-block sidebar-nav-inner'>
                                 <span
                                     style={{ marginLeft: '-5px' }}
-                                    onClick={() => setSidebarMin(!sidebarMin)} className='text-center mb-2 d-block'>
+                                     className='text-center mb-2 d-block'>
 
-                                    <img style={{ width: '30px', height: '30px' }} src='/logo.png' className=' mr-3' />
-                                    {!sidebarMin && <b className='text-dark pt-2' style={{ fontSize: '25px' }}>PlugMan </b>}
+                                    <span onClick={() => setSidebarMin(!sidebarMin)}>
+                                        <img style={{ width: '30px', height: '30px', position: 'relative', top: '-5px'  }} src='/logo.png' className=' mr-3' />
+                                    {!sidebarMin && <b className='text-dark pt-2' style={{ fontSize: '25px'}}>PlugMan 🚀 </b>}
+</span>
+                                    <a className='ml-2 text-color-default' target="_blank" href='https://github.com/ayotycoon/plugman'><i className='fab fa-github'></i></a>
 
                                 </span>
 
@@ -486,7 +489,7 @@ function Layout(props: any) {
                         <div className='p-2' style={{ position: 'absolute', bottom: '30px' }}>
                             <input onChange={(e: any) => {
 setSocketUrl(e.target.value)
-                            }} className='form-control small' value={socketUrl} placeholder='Enter socket url' />
+                            }} disabled={props.socket.status.connected} className='form-control small' value={socketUrl} placeholder='Enter socket url' />
 
                             <div className='mt-1'>{!props.socket.status.connected ?<> <button onClick={() => {
                                 storage.serverUrl.set(socketUrl);
