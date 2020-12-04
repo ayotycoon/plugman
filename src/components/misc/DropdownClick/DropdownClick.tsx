@@ -36,16 +36,19 @@ function DropdownClick(props: any) {
 
 
 
-            clickedFunRef.current = window.addEventListener('click', (e: any) => {
+            clickedFunRef.current = (e: any) => {
 
                 // @ts-ignore
                 if ((e.target.className.match('dropdown-click-close') || !isDescendant(DropdownClickRef.current, e.target)) && componentIsMounted.current) {
                     if (props.onClick) {
                         props.onClick(false)
                     }
+                    window.removeEventListener('click', clickedFunRef.current)
                     preSetClicked(false)
                 }
-            })
+            }
+            
+            window.addEventListener('click', clickedFunRef.current)
 
         } else {
 

@@ -6,6 +6,12 @@ $theme-colors: (
   "info": rgb(13, 96, 216),
   "dark":  #1e1e1e,
 );
+.input-mimick{
+  background-color: white;
+}
+.capitalize{
+  text-transform: capitalize;
+}
 // vs dark #1e1e1e
 //#202124
 .bg-nav {
@@ -47,7 +53,7 @@ $theme-colors: (
   .bg-dark-light{
     background-color: #404040;
   }
-  .form-control{
+  .form-control, .input-mimick{
     background-color: #404040 !important;
     color: white !important;
   }
