@@ -4,7 +4,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    BrowserRouter,
 } from "react-router-dom";
 import { store, Provider } from './store'
 import { monaco } from '@monaco-editor/react';
@@ -55,7 +54,7 @@ function App() {
     return (
         <Provider store={store}>
             <Overlay />
-            <BrowserRouter basename="/plugman" />
+            
       
             <Router>
                 <ScrollToTop />
