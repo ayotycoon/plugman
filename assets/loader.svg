@@ -1,0 +1,14 @@
+<svg width="80px"  height="80px"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-ring" style="background: none;">
+    <defs>
+      <mask ng-attr-id="{{config.cpid}}" id="lds-flat-ring-a1b5111eb6e61">
+        <circle cx="50" cy="50" r="45" ng-attr-fill="{{config.base}}" fill="#e0e0e0"></circle>
+      </mask>
+    </defs>
+    <circle cx="50" cy="50" r="45" ng-attr-fill="{{config.base}}" fill="#e0e0e0"></circle>
+    <path ng-attr-d="{{config.d}}" ng-attr-fill="{{config.dark}}" ng-attr-mask="url(#{{config.cpid}})" d="M26.66547622084393 73.33452377915606 A33 33 0 0 1 73.33452377915607 26.665476220843935 L173.3345237791561 126.66547622084394 L126.66547622084393 173.33452377915606 Z" fill="rgb(181, 181, 181)" mask="url(#lds-flat-ring-a1b5111eb6e61)"></path>
+    <circle cx="50" cy="50" ng-attr-r="{{config.radius}}" ng-attr-stroke="{{config.stroke2}}" ng-attr-stroke-width="{{config.width}}" fill="none" r="28" stroke="#ffddc3" stroke-width="10"></circle>
+    <circle cx="50" cy="50" ng-attr-r="{{config.radius}}" ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-width="{{config.innerWidth}}" ng-attr-stroke-linecap="{{config.linecap}}" fill="none" r="28" stroke="#ffffff" stroke-width="10" stroke-linecap="round" transform="rotate(6 50 50)">
+      <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 50;180 50 50;720 50 50" keyTimes="0;0.5;1" dur="1s" begin="0s" repeatCount="indefinite"></animateTransform>
+      <animate attributeName="stroke-dasharray" calcMode="linear" values="17.59291886010284 158.33626974092556;87.96459430051421 87.96459430051421;17.59291886010284 158.33626974092556" keyTimes="0;0.5;1" dur="1" begin="0s" repeatCount="indefinite"></animate>
+    </circle>
+  </svg>

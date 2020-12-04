@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "./plugman/static/css/main.de957447.chunk.css",
+    "main.js": "./plugman/static/js/main.8963a17c.chunk.js",
+    "main.js.map": "./plugman/static/js/main.8963a17c.chunk.js.map",
+    "runtime-main.js": "./plugman/static/js/runtime-main.f90e7306.js",
+    "runtime-main.js.map": "./plugman/static/js/runtime-main.f90e7306.js.map",
+    "static/js/2.773f399f.chunk.js": "./plugman/static/js/2.773f399f.chunk.js",
+    "static/js/2.773f399f.chunk.js.map": "./plugman/static/js/2.773f399f.chunk.js.map",
+    "index.html": "./plugman/index.html",
+    "precache-manifest.66815d93100110dec21bffade7156e58.js": "./plugman/precache-manifest.66815d93100110dec21bffade7156e58.js",
+    "service-worker.js": "./plugman/service-worker.js",
+    "static/css/main.de957447.chunk.css.map": "./plugman/static/css/main.de957447.chunk.css.map",
+    "static/js/2.773f399f.chunk.js.LICENSE.txt": "./plugman/static/js/2.773f399f.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f90e7306.js",
+    "static/js/2.773f399f.chunk.js",
+    "static/css/main.de957447.chunk.css",
+    "static/js/main.8963a17c.chunk.js"
+  ]
+}
