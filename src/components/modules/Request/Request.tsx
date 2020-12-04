@@ -130,15 +130,15 @@ function Request(props: any) {
             return
         }
         if (type == 'emit') {
-            try{
+            try {
                 new Function(activeRequest.script)()(activeRequest.emitBody, (cb: any) => {
                     console.log({ cb })
                 })
-            }catch(e){
+            } catch (e) {
 
             }
-          
-            
+
+
             socketService.emit(activeRequest.id as any, activeRequest.event, activeRequest.emitBody)
         } else if (type == 'listen') {
             socketService.listen(activeRequest.id as any, activeRequest.event)
@@ -160,20 +160,21 @@ function Request(props: any) {
         }
 
     };
-    const  editNameAndDiscription = () =>{
+    const editNameAndDiscription = () => {
 
+        alert('coming soon......')
     }
 
- 
+
 
     return (
 
         <div className='Request h-100'>
 
             <div className='row h-100'>
-                <div className={'h-100 p-0 ' + (props.app.darkMode ? ' bg-dark ': '') + (showActivity ? 'border-right  col-md-9' : 'col-md-12')}>
-                    <div className={'pt-2 pl-2 pr-2 ' + (props.app.darkMode ? ' bg-dark-light ' : 'bg-default-light') } style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden', whiteSpace: 'nowrap' }}>
-                        {tabs.map((tab, i) => <span className={'cursor p-1 text-color-default ' + (i == 0 ? ' ' : 'border-left ') + (tab == requestTree ?  (props.app.darkMode ? ' bg-dark ' : 'bg-app')  : '')}><span onClick={() => activateTab(tab)} className='mr-1 small font-weight-bold'> {tabTreeToName(tab)}</span> <span onClick={() => deleteTab(tab)}> <i className='fa fa-close'></i></span> </span>)}
+                <div className={'h-100 p-0 ' + (props.app.darkMode ? ' bg-dark ' : '') + (showActivity ? 'border-right  col-md-9' : 'col-md-12')}>
+                    <div className={'pt-2 pl-2 pr-2 ' + (props.app.darkMode ? ' bg-dark-light ' : 'bg-default-light')} style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden', whiteSpace: 'nowrap' }}>
+                        {tabs.map((tab, i) => <span className={'cursor p-1 text-color-default ' + (i == 0 ? ' ' : 'border-left ') + (tab == requestTree ? (props.app.darkMode ? ' bg-dark ' : 'bg-app') : '')}><span onClick={() => activateTab(tab)} className='mr-1 small font-weight-bold'> {tabTreeToName(tab)}</span> <span onClick={() => deleteTab(tab)}> <i className='fa fa-close'></i></span> </span>)}
                     </div>
                     <div style={{ height: 'calc(100vh - 180px)', overflow: 'auto' }} className='p-2'>
                         {activeRequest ? <>
@@ -191,12 +192,12 @@ function Request(props: any) {
 
                                     </div>
                                 </div>
-                                <div><span className='cursor' onClick={() => setShowDetails(!showDetails)}><i style={{ width: '15px' }} className={' fa mr-1 ' + (showDetails ? 'fa-caret-down' : 'fa-caret-right')}></i>{activeRequest.name}</span> <span className='cursor small ml-2' onClick={()=> editNameAndDiscription()}><i className='fa fa-pen'></i></span></div>
+                                <div><span className='cursor' onClick={() => setShowDetails(!showDetails)}><i style={{ width: '15px' }} className={' fa mr-1 ' + (showDetails ? 'fa-caret-down' : 'fa-caret-right')}></i>{activeRequest.name}</span> <span className='cursor small ml-2' onClick={() => editNameAndDiscription()}><i className='fa fa-pen'></i></span></div>
 
                                 {showDetails &&
 
                                     <div style={{ marginLeft: '15px' }} className=' small'>
-                                    {activeRequest.description ? <>{activeRequest.description}</> : <small className='cursor' onClick={() => editNameAndDiscription()}>Add discription<i className='fa fa-pen ml-2'></i></small> }
+                                        {activeRequest.description ? <>{activeRequest.description}</> : <small className='cursor' onClick={() => editNameAndDiscription()}>Add discription<i className='fa fa-pen ml-2'></i></small>}
                                     </div>
                                 }
                             </div>
@@ -230,7 +231,7 @@ function Request(props: any) {
                                 </div>
 
                             </div>
-<br />
+                            <br />
                             <div className='text-color-default' style={{}}>
                                 {cells.map((cell, i) => {
                                     return (
@@ -241,13 +242,13 @@ function Request(props: any) {
                             </div>
                             <br />
 
-                            {activeCellIndex== 0 &&  activeRequest.type == 'emit' &&
+                            {activeCellIndex == 0 && activeRequest.type == 'emit' &&
 
                                 <div>
 
-                                   
 
-                                <ControlledEditor theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
+
+                                    <ControlledEditor theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
                                         minimap: {
                                             enabled: false
                                         },
@@ -262,13 +263,13 @@ function Request(props: any) {
                                 <div>
 
                                     <ControlledEditor theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
-                                    minimap: {
-                                        enabled: false
-                                    },
-                                    wordWrap: 'on',
-                                    readOnly:true
+                                        minimap: {
+                                            enabled: false
+                                        },
+                                        wordWrap: 'on',
+                                        readOnly: true
 
-                                }} height="calc(100vh - 300px)" value={activeRequest.listenerBody || ''} language="json" />
+                                    }} height="calc(100vh - 300px)" value={activeRequest.listenerBody || ''} language="json" />
 
                                     <small className='text-color-default'>Listen body is automatically updated when this event is called</small>
                                 </div>}
@@ -276,45 +277,47 @@ function Request(props: any) {
 
                                 <div>
 
-                                <ControlledEditor onChange={(ev: any, value: any) => handleEditorChange(ev, value, 'script')} theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
-                                    minimap: {
-                                        enabled: false
-                                    },
-                                    wordWrap: 'on',
-                                 
+                                    <ControlledEditor onChange={(ev: any, value: any) => handleEditorChange(ev, value, 'script')} theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
+                                        minimap: {
+                                            enabled: false
+                                        },
+                                        wordWrap: 'on',
 
-                                }} height="calc(100vh - 300px)" value={activeRequest.script || ''} language="javascript" />
 
-                               
+                                    }} height="calc(100vh - 300px)" value={activeRequest.script || ''} language="javascript" />
+
+
                                 </div>}
 
 
 
                         </> : <div style={{
                             height: 'calc(100vh - 200px)',
-                            display:'flex',
-                           alignItems: 'center',
-                      
-                        //    justifyContent: 'center'
+                            display: 'flex',
+                            alignItems: 'center',
+
+                            //    justifyContent: 'center'
                         }}>
-                            
+
                                 <div className='h4 change-in-dark-1 p-4'>
-                              
-                                Open a Request
+
+                                    Open a Request
                                 <br />
-                                <br />
-                                  <b>How to use</b>
-                                <ol>
-                                    <li>Connect socket url</li>
-                                    <li>Make an emit request</li>
+                                    <br />
+                                    <b>How to use</b>
+                                    <ol>
+                                        <li>Connect  to socket url</li>
+                                        <li>Make an emit request </li>
                                         <li>create a listen request</li>
-                                    <li>Receive the request from your server and emit back the listen event</li>
-                                      
-                                </ol>
-                              
+                                        <li>Receive the request from your server and emit back the listen event</li>
+
+                                        <li> Emit the <i>emit</i> request </li>
+                                        <li>Listen to the <i>listen</i> request</li>
+                                    </ol>
+
                                 </div>
                             </div>
-                            }
+                        }
 
                     </div>
                 </div>

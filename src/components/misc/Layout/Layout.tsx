@@ -49,10 +49,12 @@ function Layout(props: any) {
     const [activeNavIndex, setActiveNavIndex] = useState(0)
     const [activeTree, setActiveTree] = useState('')
     const [socketUrl, setSocketUrl] = useState(storage.serverUrl.get() || '')
+    const [lastSelectedFolderTree, setLastSelectedFolderTree] = useState('/')
     const [collections, setCollections] = useState([] as any[])
     const [contextMenu, setContextMenu] = useState(null as unknown as any)
     const activenav = navLinks[activeNavIndex];
     const contextRef = useRef(null as unknown as any)
+    const lastFolderRef = useRef(null as unknown as any)
     const collectionsModified = useRef(0)
 
     const darkMode = props.app.darkMode;
@@ -295,10 +297,28 @@ function Layout(props: any) {
 
     }
   
+    function lastFolderCB(tree?: any) {
+        if (tree) {
+            lastFolderRef.current = function (e: any) {
+                setLastSelectedFolderTree('/')
+                lastFolderCB()
+                
+            } 
+
+            setTimeout(()=> {
+                window.addEventListener('click', lastFolderRef.current)
+            },500)
+          
+        } else {
+            window.removeEventListener('click', lastFolderRef.current)
+        }
+        setLastSelectedFolderTree(tree)
+    }
     function setContextMenuF(data: any) {
         if (data) {
             contextRef.current = function (e: any) {
                 setContextMenu(null)
+                
             } 
 
             window.addEventListener('click', contextRef.current)
@@ -332,7 +352,7 @@ function Layout(props: any) {
                                     isFolder:true
 
                                 })
-                            }} className='p-1 hover-collection ' onClick={() => onCollectionEvent('toggleFolder', tree, treeName)}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
+                            }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree);onCollectionEvent('toggleFolder', tree, treeName)}}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
 
                             {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
 
@@ -442,11 +462,11 @@ function Layout(props: any) {
                         
                             <div>
                             <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
-                                <span title='new request' onClick={() => {
-                                    onCollectionEvent('create-request', '/');
+                                <span title='Create request' onClick={() => {
+                                    onCollectionEvent('create-request', lastSelectedFolderTree || '/');
                                 }} className='cursor mr-2'><i className='fa fa-file-medical'></i></span>
-                                <span title='new folder' onClick={() => {
-                                    onCollectionEvent('create-folder', '/');
+                                <span title='Create folder' onClick={() => {
+                                    onCollectionEvent('create-folder', lastSelectedFolderTree ||'/');
                                 }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
                             </div>
                             <div 

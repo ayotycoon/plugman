@@ -37,6 +37,14 @@ const defaultCollection = [
                 listenBody: `{"foo": "bar}`
             },
         ],
+    },
+    {
+        id: getId(),
+        name: 'Right click on me to see folder options',
+        isFolder: true,
+        children:[
+        
+        ],
     }
 ]
 
