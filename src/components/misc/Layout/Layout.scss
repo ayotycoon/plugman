@@ -1,0 +1,219 @@
+$sidebarWidth: 70px;
+$sidebarWidthMax: 300px;
+$topbarHeight: 60px;
+
+.Layout {
+   
+    .navbar-ticker {
+        display: flex;
+        .navbar-ticker-left,
+        .navbar-ticker-right {
+            width: 30px;
+            text-align: center;
+        }
+
+        .navbar-ticker-main {
+           // width: calc(100% - 100px) !important
+           flex-grow: 1;
+           overflow: hidden;
+    
+        }
+    }
+
+
+
+    .toast {
+        position: absolute;
+        font-weight: bold;
+        left: 5%;
+        top: 10%;
+    }
+    .toast1 {
+        position: absolute;
+        font-weight: bold;
+        right: -5px;
+        top: -5px;
+        font-size: 15px;
+    }
+    .toast2 {
+        position: absolute;
+        font-weight: bold;
+        right: 5%;
+        top: 10%;
+    }
+    .sidebar,
+    .content,
+    .topbar,
+    .sidebar-text {
+        transition: all;
+        transition-duration: 0.5s;
+    }
+    .sidebar-logo {
+        .sidebar-nav-inner {
+        //    font-size: 25px;
+
+            //   background-image: linear-gradient(120deg,white 50%, #ff8438);
+        }
+    }
+
+    .sidebar {
+        width: $sidebarWidth;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: calc(100vh - 16px);
+        border-radius: 30px;
+        //overflow-y: auto;
+
+        overflow-x: visible !important;
+        z-index: 10;
+        .sidebar-logo {
+            margin-top: 10px;
+            .fa {
+                font-size: 20px;
+            }
+        }
+
+        .sidebar-nav {
+            text-align: center;
+          
+            position: relative;
+            .fa {
+                font-size: 20px;
+            }
+
+            .sidebar-text {
+                white-space: nowrap;
+                margin-left: 15px;
+            }
+        }
+        .sidebar-text {
+            opacity: 0;
+        }
+    }
+    .topbar {
+        position: fixed;
+        height: $topbarHeight;
+        padding-top: 15px;
+        left: $sidebarWidth;
+        width: calc(100vw - 60px);
+        padding-right:  50px;
+        padding-left:  25px;
+        z-index: 5;
+        display: inline-block;
+        padding-top: 15px;
+    }
+    .content {
+        margin-left: $sidebarWidth;
+        padding-left: 10px;
+
+      padding-top: 70px;
+   
+
+        width: calc(100vw - 60px);
+
+    }
+
+    &.sidebar-max {
+        .sidebar {
+            width: $sidebarWidthMax !important;
+            overflow: hidden !important;
+        }
+        .topbar {
+            left: $sidebarWidthMax ;
+            width: calc(100vw - 300px) ;
+        }
+        .content {
+            margin-left: $sidebarWidthMax ;
+            width: calc(100vw - 300px) ;
+        }
+        .sidebar-text {
+            opacity: 1;
+        }
+    }
+    .sidebar-toast {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: black;
+        font-weight: bold;
+    }
+}
+
+.splash-container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    div {
+        text-align: center;
+    }
+
+    img:nth-child(1) {
+        width: 100px;
+    }
+    .loader {
+        margin-top: 5px;
+        height: 5px;
+        position: relative;
+        overflow-x: hidden;
+
+        .bar {
+            height: 3px;
+
+            position: absolute;
+            animation-name: bar;
+            animation-duration: 1.5s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+    }
+}
+
+@keyframes bar {
+    0% {
+        left: -32%;
+        width: 33%;
+    }
+    50% {
+        left: 100%;
+        width: 60%;
+    }
+    100% {
+        left: -55%;
+        width: 33%;
+    }
+}
+
+.text-dark-i {
+    color: #373737 !important ;
+    font-weight: bold !important;
+}
+
+@media (max-width: 800px) {
+    .content,
+    .topbar {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    .sidebar {
+        border-radius: 25px !important;
+    }
+    .sidebar-max {
+        .sidebar{
+  position: fixed;
+  z-index:50;
+        }
+      
+        .topbar {
+            left: $sidebarWidth !important;
+           // margin-left: $sidebarWidth !important;
+            width: calc(100vw - 60px) !important;
+        }
+        .content {
+            margin-left: $sidebarWidth !important;
+            width: calc(100vw - 60px) !important;
+        }
+    }
+}

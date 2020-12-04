@@ -1,0 +1,59 @@
+.Modal {
+    position: fixed;
+    background-color: rgba(42, 42, 41, 0.361);
+ 
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    cursor: not-allowed;
+    &.Modal-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .Modal-inner {
+        
+    min-width: 250px;
+   // min-height: 250px;
+    max-height: calc(100vh - 100px );
+    overflow: auto;
+    
+    cursor: auto;
+    }
+    .Modal-inner-heading{
+        .Modal-inner-heading-text{
+            display: inline-block;
+            vertical-align: top;
+            width: calc(100% - 30px)
+
+        }
+
+        .Modal-inner-heading-close-container{
+             display: inline-block;
+            vertical-align: top;
+            width: 30px;
+
+        }
+
+    }
+    .Modal-close {
+        display: inline-block;
+        text-align: center;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+    }
+  
+}
+
+.bg-app-dark {
+    .Modal{
+          background-color: rgba(233, 233, 233, 0.361);
+           // border: 1px dotted white !important;
+        }
+        
+ 
+    
+}
+

@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,300;0,400;0,600;1,100;1,300;1,500&display=swap');
+$theme-colors: (
+  "primary": #419B95,
+  "secondary": #EC7632,
+  "warning": #d62196,
+  "info": rgb(13, 96, 216),
+  "dark":  #1e1e1e,
+);
+// vs dark #1e1e1e
+//#202124
+.bg-nav {
+  background-color: #98989889 !important;
+}
+.hover-collection:hover{
+  background-color:#cacbcc;
+}
+.bg-dark-light{
+  background-color:#cacbcc;
+ 
+}
+.text-muted {
+  color: #A4A3A3 ;
+}
+.text-color-default {
+  color:#404040 ;
+}
+.bg-app-default {
+  background-color: #f6f7fa;
+  color: #50556c;
+}
+.bg-default-light{
+ background-color:#cacbcc;
+}
+.bg-app{
+  background-color: #f6f7fa;
+}
+
+
+.bg-app-dark {
+  background-color: #1e1e1e;
+  .hover-collection:hover{
+  background-color: #404040;
+}
+  .text-color-default{
+    color: #f6f7fa !important;
+  }
+  .bg-dark-light{
+    background-color: #404040;
+  }
+  .form-control{
+    background-color: #404040 !important;
+    color: white !important;
+  }
+
+  .change-in-dark-1,
+  .introjs-tooltiptext {
+    color: white;
+  }
+
+  .text-dark {
+    color: white !important;
+  }
+  .bg-white {
+    background-color: #1e1e1e !important;
+    color: white;
+    // border: 1px solid white;
+  }
+  .paper {
+    color: white !important;
+
+    // * {
+    //   border-color: white !important;
+    // }
+    input,textarea{
+      background-color: transparent !important;
+      color: white;
+      border: 1px solid rgb(211, 211, 211) !important;
+    }
+  }
+
+  .introjs-tooltip {
+    background-color: #1e1e1e !important;
+  }
+  .Modal-inner{
+    border: 1px solid white;
+  }
+}
+
+@import "~bootstrap/scss/bootstrap";
+
+.box-shadow {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+// *{
+//   border-radius: 0 !important;
+// }
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+  height: 100vh !important;
+
+font-family: 'Montserrat', sans-serif;
+}
+
+.cursor {
+  cursor: pointer;
+}
+.info-container {
+  position: relative;
+  .info-content {
+    display: none;
+  }
+  &:hover .info-content {
+    display: inline-block;
+    position: absolute;
+    top: 15px;
+    left: 0px;
+    width: 200px;
+    z-index: 3;
+  }
+}
+.spin {
+  animation-name: spinA;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  &.slower {
+    animation-duration: 1s !important;
+  }
+}
+@keyframes spinA {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.row{
+  margin:0 !important;
+}

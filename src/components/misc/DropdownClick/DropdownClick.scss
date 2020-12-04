@@ -1,0 +1,16 @@
+.DropdownClick{
+ position: relative;
+ z-index: 2;
+ &.d-block{
+     .two{
+    width: 100%;
+     }
+ }
+ .two{
+      z-index: 3;
+     position: absolute;
+ 
+ }
+
+
+}

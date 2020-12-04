@@ -1,0 +1,34 @@
+.Alert {
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    z-index: 31;
+    &.alert-attention {
+        background-color: rgba(42, 42, 41, 0.361);
+        width: 100vw;
+        height: 100vh;
+    }
+    .alert-inner {
+        text-align: center;
+        border-radius: 0;
+        max-width: 300px;
+    }
+}
+.each-select {
+    position: relative;
+    &:hover {
+        .select-info {
+            display: block;
+        }
+    }
+    .select-info {
+        display: none;
+        position: absolute;
+        right: 20px;
+        bottom: -50px;
+        width: 200px;
+
+    }
+}

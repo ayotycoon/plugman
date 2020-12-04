@@ -1,0 +1,31 @@
+.Loading {
+    .image,
+    .text {
+        animation-name: gr;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-duration: 5s;
+        background: fff;
+        background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    }
+    .text {
+        height: 30px;
+    }
+
+    .notif{
+           height: 150px;
+        width: 300px;
+    }
+    position: relative;
+    overflow: hidden;
+
+}
+
+@keyframes gr {
+    0% {
+        background-position: 0px 0;
+    }
+    100% {
+        background-position: 100em 0;
+    }
+}

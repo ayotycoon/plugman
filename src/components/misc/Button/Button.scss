@@ -1,0 +1,7 @@
+.Button{
+    vertical-align: top;
+    position: relative;
+    button[disabled] {
+cursor: not-allowed;
+    }
+}

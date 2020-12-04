@@ -1,0 +1,24 @@
+.Request {
+  
+    .request-bar {
+        display: flex;
+        .request-bar-item{
+
+        }
+      
+        .request-bar-item-1 {
+            flex-grow: 1;
+            padding-left: 10px;
+        }
+        .request-bar-item-2 {
+                    padding-left: 10px;
+        }
+        .request-bar-item-3 {
+                    padding-left: 10px;
+        }
+    }
+
+    ::-webkit-scrollbar {
+  display: none;
+}
+}
