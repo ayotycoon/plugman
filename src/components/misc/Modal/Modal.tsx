@@ -1,6 +1,5 @@
 import React from 'react'
 import './Modal.scss'
-import AsyncImage from '../AsyncImage/AsyncImage'
 
 interface ModalI {
     title?: string;
@@ -54,7 +53,7 @@ function Modal(props: ModalI) {
 
                     <div className='text-center'>
 
-                        <AsyncImage src='/assets/loader.svg' />
+                        <img src='/assets/loader.svg' />
                     </div>
                 }
 

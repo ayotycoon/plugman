@@ -160,7 +160,7 @@ function Request(props: any) {
         }
 
     };
-    const editNameAndDiscription = () => {
+    const editNameAndDescription = () => {
 
         alert('coming soon......')
     }
@@ -192,12 +192,12 @@ function Request(props: any) {
 
                                     </div>
                                 </div>
-                                <div><span className='cursor' onClick={() => setShowDetails(!showDetails)}><i style={{ width: '15px' }} className={' fa mr-1 ' + (showDetails ? 'fa-caret-down' : 'fa-caret-right')}></i>{activeRequest.name}</span> <span className='cursor small ml-2' onClick={() => editNameAndDiscription()}><i className='fa fa-pen'></i></span></div>
+                                <div><span className='cursor' onClick={() => setShowDetails(!showDetails)}><i style={{ width: '15px' }} className={' fa mr-1 ' + (showDetails ? 'fa-caret-down' : 'fa-caret-right')}></i>{activeRequest.name}</span> <span className='cursor small ml-2' onClick={() => editNameAndDescription()}><i className='fa fa-pen'></i></span></div>
 
                                 {showDetails &&
 
                                     <div style={{ marginLeft: '15px' }} className=' small'>
-                                        {activeRequest.description ? <>{activeRequest.description}</> : <small className='cursor' onClick={() => editNameAndDiscription()}>Add discription<i className='fa fa-pen ml-2'></i></small>}
+                                        {activeRequest.description ? <>{activeRequest.description}</> : <small className='cursor' onClick={() => editNameAndDescription()}>Add description<i className='fa fa-pen ml-2'></i></small>}
                                     </div>
                                 }
                             </div>

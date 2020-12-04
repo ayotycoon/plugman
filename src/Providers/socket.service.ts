@@ -28,28 +28,33 @@ class SocketService {
     socket: SocketIOClient.Socket;
     // @ts-ignore
     host: string;
-    public initialize(host: string) {
-        this.host = host;
-        this.socket = io(host)
+    public initialize(host: string, cb?: any) {
+       
+            this.host = host;
+            this.socket = io(host)
 
-        this.socket.on('connect', () => {
-            this.emitActivity('listen', 'connect')
-            status.connected = true
-            this.next()
+            this.socket.on('connect', () => {
+                if(cb){
+                    cb(true)
+                }
+               
+                this.emitActivity('listen', 'connect')
+                status.connected = true
+                this.next()
+
+            
+            this.socket.on('disconnect', () => {
+
+                this.disconnect()
+                // this.initialize(this.host)
+
+            })
 
         })
-        this.socket.on('disconnect', () => {
-
-            this.disconnect()
-            // this.initialize(this.host)
-
-        })
-
+      
     }
     public initializeAndListen(host: string) {
-        this.initialize(host)
-
-        setTimeout(() => {
+        this.initialize(host, () => {
             const h = CollectionsService.getRequestHash()
             Object.values(h).forEach((b: any) => {
                 if (b.type == 'emit' && b.event) {
@@ -59,7 +64,14 @@ class SocketService {
                     this.listen(b.id, b.event)
                 }
             })
-        }, 5000)
+
+        })
+  
+      
+
+     
+
+     
     }
     private next() {
         store.dispatch(setStatus(status))

@@ -10,7 +10,6 @@ import { monaco } from '@monaco-editor/react';
 
 import Layout from './components/misc/Layout/Layout';
 import Overlay from './components/misc/Overlay/Overlay';
-import ScrollToTop from './components/misc/ScrollToTop/ScrollToTop';
 import { possibleResizeObs } from './Providers/core.service';
 import {  DebounceTime } from './Providers/helpers';
 import socketService from './Providers/socket.service';
@@ -57,7 +56,7 @@ function App() {
             
       
             <Router>
-                <ScrollToTop />
+                
                 <Switch>
                
                 
