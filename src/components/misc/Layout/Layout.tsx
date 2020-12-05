@@ -4,7 +4,6 @@ import { Route, Redirect, Link, Switch } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { loading } from '../../../store/actions/network.action'
 import { setUserData, toggleDarkMode, setFinishedAuthenticationAttempt } from '../../../store/actions/app.action'
-import { setNotifications } from '../../../store/actions/notification.action'
 
 import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../../Providers/core.service';
 
@@ -621,4 +620,4 @@ const mapStateToProps = (state: any) => ({
     socket: state.socket
 })
 
-export default connect(mapStateToProps, { loading, setUserData, toggleDarkMode, setFinishedAuthenticationAttempt, setNotifications })(Layout)
+export default connect(mapStateToProps, { loading, setUserData, toggleDarkMode, setFinishedAuthenticationAttempt })(Layout)

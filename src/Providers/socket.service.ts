@@ -1,10 +1,6 @@
 import { CollectionsService } from './Collections.service';
-import { setTimeout } from 'timers';
-import { BehaviourSubject } from './helpers';
 import { toaster } from './core.service';
 import io from 'socket.io-client';
-
-import { addNotification } from '../store/actions/notification.action';
 import { store } from '../store';
 import { addActivity, setStatus, setTrackers } from '../store/actions/socket.action';
 
@@ -188,27 +184,7 @@ class SocketService {
 
     }
 
-    private onMessage(data: { type: 'toast' | 'new-notification' | 'modal' | 'action', data: any }) {
 
-        if (data.type === 'modal') {
-            return
-        }
-        if (data.type === 'action') {
-            return
-        }
-        if (data.type === 'new-notification') {
-            //console.log(data)
-            store.dispatch(addNotification(data.data))
-
-            toaster({ message: '1 new notification ' })
-
-            return
-        }
-
-        toaster(data.data)
-
-
-    }
 }
 
 const socketService = new SocketService()
