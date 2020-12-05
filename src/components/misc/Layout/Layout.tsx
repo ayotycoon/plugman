@@ -20,6 +20,7 @@ import Request from '../../modules/Request/Request';
 import { CollectionFolder, CollectionRequest } from '../../types';
 import CollectionsService, { collectionsObs } from '../../../Providers/Collections.service';
 import { setTimeout } from 'timers';
+import TypePill from '../TypePill/TypePill';
 
 
 
@@ -369,10 +370,8 @@ function Layout(props: any) {
                                 })
                             }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}> 
                             
-                            <small className={'p-1  font-weight-bold ' + ((collection as any).type == 'emit' ? 'text-primary' : 'text-secondary')} >{
-                                // @ts-ignore
-                                collection.type}</small>
-                                
+                                <TypePill type={(collection as any).type} />
+                                 
                                  {collection.name}</div>
                         </>
                 }

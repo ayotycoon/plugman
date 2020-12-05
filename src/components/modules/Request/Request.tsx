@@ -338,8 +338,8 @@ function Request(props: any) {
                                         <li>create a listen request</li>
                                         <li>Receive the request from your server and emit back the listen event</li>
 
-                                        <li> Emit the <i>emit</i> request </li>
-                                        <li>Listen to the <i>listen</i> request</li>
+                                        <li> Emit the <code>emit</code> request </li>
+                                        <li>Listen to the <code>listen</code> request</li>
                                     </ol>
 
                                 </div>

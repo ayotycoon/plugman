@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { setTitle } from '../../../store/actions/app.action'
 import Editor from '@monaco-editor/react';
 import DropdownClick from '../../misc/DropdownClick/DropdownClick';
+import TypePill from '../../misc/TypePill/TypePill';
 
 const DEFAULTS = {
     'listen-connect': true,
@@ -127,9 +128,7 @@ function keyGen(type: any,event: any){
 
 
                                 }>
-                                    <span style={{ display: 'block', textAlign: (isActivityEmit ? 'right' : 'left') }}>{activity.event} |   <small className={'p-1  font-weight-bold ' + ((activity as any).type == 'emit' ? 'text-primary' : 'text-secondary')} >{
-                                        // @ts-ignore
-                                        activity.type}</small></span>
+                                    <span style={{ display: 'block', textAlign: (isActivityEmit ? 'right' : 'left') }}>{activity.event} |   <TypePill type={(activity as any).type} /></span>
 
                                 {activity.data && <div >
                                     <Editor options={{
