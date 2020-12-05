@@ -14,6 +14,7 @@ function Activity(props: any) {
     const eventsDisplayRef = useRef(null as unknown as HTMLDivElement);
     function setEventRefF(hash: any, e?: any) {
     
+        console.log({hash})
 
         const c = { ...events }
 
@@ -30,7 +31,7 @@ function Activity(props: any) {
         })
 
 
-        console.log(c)
+       
 
         setEvents(c)
 
@@ -49,6 +50,7 @@ function keyGen(type: any,event: any){
 
 
         });
+     
         setEventRefF(hash)
 
 
@@ -90,7 +92,7 @@ function keyGen(type: any,event: any){
 
                 <div className='change-in-dark-1 capitalize p-2 input-mimick'>
  
-                    {Object.keys(events).map((k, i) => <div className=' '><>
+                    {Object.keys(events).map((k, i) => <div key={i} className=' '><>
                         <input
                             checked={events[k]}
                         onChange={(e: any) => {
@@ -111,7 +113,7 @@ function keyGen(type: any,event: any){
             <div ref={eventsDisplayRef} style={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
                 {(props.socket.activities as any[]).map((activity, i) => {
                     const isActivityEmit = activity.type == 'emit';
-                    const showEvent = events[keyGen(activity.type, activity.event)]
+                    const showEvent = events[keyGen(activity.type, activity.event)] != false
                     return (
                         <div key={i}>
                             {showEvent ?<>
@@ -125,7 +127,9 @@ function keyGen(type: any,event: any){
 
 
                                 }>
-                                <span style={{ display: 'block', textAlign: (isActivityEmit ? 'right' : 'left') }}>{activity.event} | {activity.type}</span>
+                                    <span style={{ display: 'block', textAlign: (isActivityEmit ? 'right' : 'left') }}>{activity.event} |   <small className={'p-1  font-weight-bold ' + ((activity as any).type == 'emit' ? 'text-primary' : 'text-secondary')} >{
+                                        // @ts-ignore
+                                        activity.type}</small></span>
 
                                 {activity.data && <div >
                                     <Editor options={{

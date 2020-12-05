@@ -20,6 +20,7 @@ let listenEventToId:{
     [event: string]: string
 
 }={}
+let lastListenEvent: any = {}
 let status: any = {}
 
 
@@ -34,6 +35,7 @@ class SocketService {
             this.socket = io(host)
 
             this.socket.on('connect', () => {
+                toaster({ type: 'success', message: `<i class='fa fa-plug mr-2 '> </i>  Connected 🎉🎉` })
                 if(cb){
                     cb(true)
                 }
@@ -57,10 +59,10 @@ class SocketService {
         this.initialize(host, () => {
             const h = CollectionsService.getRequestHash()
             Object.values(h).forEach((b: any) => {
-                if (b.type == 'emit' && b.event) {
+                if (b.type === 'emit' && b.event) {
                     this.emit(b.id, b.event, b.emitBody)
                 }
-                if (b.type == 'listen' && b.event) {
+                if (b.type === 'listen' && b.event) {
                     this.listen(b.id, b.event)
                 }
             })
@@ -97,11 +99,15 @@ class SocketService {
         store.dispatch(setTrackers(tracker))
 
     }
+    getLastListenEvent(event: string){
+        return lastListenEvent[event]
+    }
     removeFromTrackerIfExist(id:string){
         
         if(tracker[id]){
-            if (tracker[id].type == 'listen'){
+            if (tracker[id].type === 'listen'){
                 delete listenEventToId[tracker[id].event]
+                delete lastListenEvent[tracker[id].event]
                 this.socket.removeListener(tracker[id].event);
             }
             this.emitTracker(id)
@@ -109,6 +115,7 @@ class SocketService {
 
     }
     public disconnect() {
+        toaster({ type: 'danger', message: `<i class='fa fa-warning mr-2 '> </i>  Disconnected` })
         // @ts-ignore
         this.socket.destroy();
         // @ts-ignore
@@ -120,20 +127,24 @@ class SocketService {
         this.emitActivity('listen', 'disconnect')
         this.emitTracker()
         this.next()
-        console.log('disconnecting')
+        listenEventToId = {}
+        lastListenEvent = {}
     }
 
     cancelListen(id: string, event: string) {
         this.emitTracker(id)
         delete listenEventToId[event]
+        delete lastListenEvent[event]
         this.socket.removeListener(event);
     }
+  
+
     listen(id: string, event: string) {
         if (listenEventToId[event] ){
             toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i>  A request is already listening to this event "<b>${event}</b>"` })
             return
         }
-        if (tracker[id] && tracker[id].type == 'listen') {
+        if (tracker[id] && tracker[id].type === 'listen') {
             return;
         }
         this.emitTracker(id, {
@@ -141,10 +152,15 @@ class SocketService {
             event
 
         })
+ 
         listenEventToId[event] = id;
 
         this.socket.on(event, (data: any) => {
-            this.emitActivity('listen', event, (typeof data == 'string' ? data : JSON.stringify(data)))
+         
+           
+        
+            lastListenEvent[event] = (typeof data === 'string' ? data : JSON.stringify(data))
+            this.emitActivity('listen', event, (typeof data === 'string' ? data : JSON.stringify(data)))
 
         })
     }
@@ -152,7 +168,7 @@ class SocketService {
 
         // if the previous one was listen, remove it
 
-        if (tracker[id] && tracker[id].type == 'listen') {
+        if (tracker[id] && tracker[id].type === 'listen') {
             delete listenEventToId[event]
             this.socket.removeListener(event);
 

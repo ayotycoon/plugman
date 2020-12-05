@@ -100,13 +100,13 @@ export class CollectionsService {
 
         function treeDataModifierF(cb?: any, localCollections?: any[]): any {
             let lastLoop = false;
-            if (treeIndex == (treeSplit.length - 1)) {
+            if (treeIndex === (treeSplit.length - 1)) {
                 lastLoop = true
             }
             let collectionTree: any[] = localCollections || JSON.parse(JSON.stringify(data));
 
 
-            if (treeSplit.length == 0) {
+            if (treeSplit.length === 0) {
 
                 if (cb) {
                     cb(null, collectionTree)
@@ -131,7 +131,7 @@ export class CollectionsService {
 
 
             for (let c of collectionTree) {
-                if (c.id == id) {
+                if (c.id === id) {
                     targetC = c;
 
                     if (c.isFolder && (treeIndex < (treeSplit.length - 1))) {

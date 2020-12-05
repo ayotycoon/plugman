@@ -45,13 +45,32 @@ function Request(props: any) {
             if (!saved) {
                 save()
             }
+         
 
+            // get old emitted message
+            if (data.request.type == 'listen') {
+                const plausibleOldEmittions = socketService.getLastListenEvent(data.request.event);
+                // get old emittions, the ones that happened when yoy were away
+                if (plausibleOldEmittions && plausibleOldEmittions != data.request.listenerBody){
+                    data.request.listenerBody = plausibleOldEmittions
+
+                    toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Listen Body updated for this request` })
+                    setTimeout(() => {
+                        setSaved(false)
+                    }, 500);
+                }
+
+             
+            
+
+            }
             setActiveRequest(data.request)
             setRequestTree(data.tree)
         }))
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
+     
         }
 
     }, [tabs, activeRequest])
@@ -174,7 +193,7 @@ function Request(props: any) {
             <div className='row h-100'>
                 <div className={'h-100 p-0 ' + (props.app.darkMode ? ' bg-dark ' : '') + (showActivity ? 'border-right  col-md-9' : 'col-md-12')}>
                     <div className={'pt-2 pl-2 pr-2 ' + (props.app.darkMode ? ' bg-dark-light ' : 'bg-default-light')} style={{ width: '100%', overflowX: 'auto', overflowY: 'hidden', whiteSpace: 'nowrap' }}>
-                        {tabs.map((tab, i) => <span className={'cursor p-1 text-color-default ' + (i == 0 ? ' ' : 'border-left ') + (tab == requestTree ? (props.app.darkMode ? ' bg-dark ' : 'bg-app') : '')}><span onClick={() => activateTab(tab)} className='mr-1 small font-weight-bold'> {tabTreeToName(tab)}</span> <span onClick={() => deleteTab(tab)}> <i className='fa fa-close'></i></span> </span>)}
+                        {tabs.map((tab, i) => <span key={i} className={'cursor p-1 text-color-default ' + (i == 0 ? ' ' : 'border-left ') + (tab == requestTree ? (props.app.darkMode ? ' bg-dark ' : 'bg-app') : '')}><span onClick={() => activateTab(tab)} className='mr-1 small font-weight-bold'> {tabTreeToName(tab)}</span> <span onClick={() => deleteTab(tab)}> <i className='fa fa-close'></i></span> </span>)}
                     </div>
                     <div style={{ height: 'calc(100vh - 180px)', overflow: 'auto' }} className='p-2'>
                         {activeRequest ? <>

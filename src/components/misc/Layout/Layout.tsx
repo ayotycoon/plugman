@@ -366,9 +366,13 @@ function Layout(props: any) {
                                     isFolder: false
 
                                 })
-                            }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}> <small className={'p-1  font-weight-bold ' + ((collection as any).type == 'emit' ? 'text-primary' : 'text-secondary')} >{
+                            }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}> 
+                            
+                            <small className={'p-1  font-weight-bold ' + ((collection as any).type == 'emit' ? 'text-primary' : 'text-secondary')} >{
                                 // @ts-ignore
-                                collection.type}</small> {collection.name}</div>
+                                collection.type}</small>
+                                
+                                 {collection.name}</div>
                         </>
                 }
 
@@ -473,7 +477,7 @@ function Layout(props: any) {
                                     <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')} style={{ marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', overflow: 'auto' }}>
                                         {contextMenu && <ContextMenu />}
 
-                                        {collections.map(collection => <CollectionRenderer data={collection} />)}
+                                        {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
                                     </div>
                                 </div>
                             </div>
