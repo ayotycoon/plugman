@@ -36,7 +36,7 @@ monaco
                 { token: 'green', background: 'FF0000', foreground: '00FF00', fontStyle: 'italic' },
                 { token: 'red', foreground: 'FF0000', fontStyle: 'bold underline' },
                 { background: '000000' },
-                { foreground: 'FFFFFF' }
+                { foreground: '000000' }
             ],
         }
         monaco.editor.defineTheme('plugman-light', theme)

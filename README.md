@@ -39,4 +39,10 @@ The `socket.service.ts` file in `/src/Providers` contains all the socket configu
 
 The `Collections.service.ts` file in `/src/Providers` contains all the Collections data including the requests structure and different objects to keep track of the active state of each requests and folders
 
+## Whats left?
+### Environment variables
+Variables should be introduced so as to make some modifications easier
+
+### Scripting
+Each request has a script tab, which tries to mimick that of post man where you can modify the body of the request and do some extra things. the tab is currently not functional
 

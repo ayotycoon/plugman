@@ -134,11 +134,7 @@ function Overlay() {
                                     window.open(`whatsapp://send?${encodeURIComponent(shareContent)}`);
                                 }
                             },
-                            /*
-                            { icon: 'fab fa-facebook', name: 'facebook', onClick: () => { } },
-                            { icon: 'fab fa-instagram', name: 'instagram', onClick: () => { } },
-
-                            */
+                        
                             {
                                 icon: 'fab fa-twitter', name: 'twitter', onClick: () => {
 

@@ -39,11 +39,11 @@ function Request(props: any) {
             if (!data) {
                 return
             }
-           
+
             switch (data.type) {
                 case 'new-request':
 
-                // if tab doesnt exist before, create a new pne
+                    // if tab doesnt exist before, create a new pne
                     if (tabs.indexOf(data.tree) == -1) {
                         const tabsClone = [...tabs, data.tree];
                         setTabs(tabsClone)
@@ -75,11 +75,11 @@ function Request(props: any) {
                     setRequestTree(data.tree)
 
                     break;
-                    case 'del-request':
-              
-                        if(tabs.indexOf(data.tree) != -1){
-                            deleteTab(data.tree)
-                        }
+                case 'del-request':
+
+                    if (tabs.indexOf(data.tree) != -1) {
+                        deleteTab(data.tree)
+                    }
             }
 
 
@@ -157,7 +157,7 @@ function Request(props: any) {
         if (!saved) {
             save()
         }
-            // update the location request tree
+        // update the location request tree
         props.history.push(window.location.pathname + '?requestTree=' + tree)
         props.setActiveTree(tree)
         const ids = tree.split('/')
@@ -175,20 +175,16 @@ function Request(props: any) {
         return CollectionsService.getRequestFromId(id)?.name
     }
 
-    function action(type: string) {
+    async function action(type: string) {
         if (!props.socket.status.connected) {
             toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i>  You are not connected` })
 
             return
         }
         if (type == 'emit') {
-            try {
-                new Function(activeRequest.script)()(activeRequest.emitBody, (cb: any) => {
-                    console.log({ cb })
-                })
-            } catch (e) {
 
-            }
+
+        
 
 
             socketService.emit(activeRequest.id as any, activeRequest.event, activeRequest.emitBody)

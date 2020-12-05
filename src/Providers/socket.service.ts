@@ -180,12 +180,34 @@ class SocketService {
 
         this.socket.emit(event, data)
 
-        this.emitActivity('emit', event, data)
+        this.emitActivity('emit', event,( typeof data == 'string' ? data : JSON.stringify(data)) )
 
     }
 
 
 }
+/*
+version 2 scripting
+
+
+    if (activeRequest.script) {
+                try {
+                    const newBody = await new Function(activeRequest.script)()(activeRequest.emitBody);
+                    if(!newBody){
+                        throw ''
+                    }
+
+                    return socketService.emit(activeRequest.id as any, activeRequest.event, newBody)
+
+                } catch (e) {
+                    toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i> Your script is invalid, skipping...` })
+
+
+                }
+
+            }
+
+*/
 
 const socketService = new SocketService()
 
