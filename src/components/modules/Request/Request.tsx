@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Request.scss';
 import { connect } from 'react-redux'
-import { setTitle } from '../../../store/actions/app.action'
+import { setTitle, setActiveTree } from '../../../store/actions/app.action'
 import DropdownClick from '../../misc/DropdownClick/DropdownClick';
 import { sendToCollectionObs, toaster } from '../../../Providers/core.service';
 import { CollectionRequest } from '../../types';
@@ -9,6 +9,7 @@ import CollectionsService from '../../../Providers/Collections.service';
 import socketService from '../../../Providers/socket.service';
 import Activity from '../Activity/Activity';
 import Editor, { ControlledEditor } from '@monaco-editor/react';
+import { request } from 'http';
 
 
 
@@ -33,44 +34,63 @@ function Request(props: any) {
     }, [])
     useEffect(() => {
 
+
         subs.current.push(sendToCollectionObs.subscribe((data: any) => {
             if (!data) {
                 return
             }
+           
+            switch (data.type) {
+                case 'new-request':
 
-            if (tabs.indexOf(data.tree) == -1) {
-                const tabsClone = [...tabs, data.tree];
-                setTabs(tabsClone)
+                // if tab doesnt exist before, create a new pne
+                    if (tabs.indexOf(data.tree) == -1) {
+                        const tabsClone = [...tabs, data.tree];
+                        setTabs(tabsClone)
+                    }
+                    // if the previous request was not saved, save it
+                    if (!saved) {
+                        save()
+                    }
+
+
+                    // get old emitted message
+                    if (data.request.type == 'listen') {
+                        const plausibleOldEmittions = socketService.getLastListenEvent(data.request.event);
+                        // get old emittions, the ones that happened when yoy were away
+                        if (plausibleOldEmittions && plausibleOldEmittions != data.request.listenerBody) {
+                            data.request.listenerBody = plausibleOldEmittions
+
+                            toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Listen Body updated for this request` })
+                            setTimeout(() => {
+                                setSaved(false)
+                            }, 500);
+                        }
+
+
+
+
+                    }
+                    setActiveRequest(data.request)
+                    setRequestTree(data.tree)
+
+                    break;
+                    case 'del-request':
+              
+                        if(data.tree == props.app.activeTree){
+                            deleteTab(props.app.activeTree)
+                        }
             }
-            if (!saved) {
-                save()
-            }
-         
 
-            // get old emitted message
-            if (data.request.type == 'listen') {
-                const plausibleOldEmittions = socketService.getLastListenEvent(data.request.event);
-                // get old emittions, the ones that happened when yoy were away
-                if (plausibleOldEmittions && plausibleOldEmittions != data.request.listenerBody){
-                    data.request.listenerBody = plausibleOldEmittions
 
-                    toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Listen Body updated for this request` })
-                    setTimeout(() => {
-                        setSaved(false)
-                    }, 500);
-                }
 
-             
-            
+        }
 
-            }
-            setActiveRequest(data.request)
-            setRequestTree(data.tree)
-        }))
+        ))
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
-     
+
         }
 
     }, [tabs, activeRequest])
@@ -108,7 +128,7 @@ function Request(props: any) {
     }
     function deleteTab(tab: string) {
         const tabsClone = tabs.filter(t => t != tab);
-   
+
 
         if (tab == requestTree) {
             save()
@@ -116,30 +136,35 @@ function Request(props: any) {
             if (tabsClone.length > 0) {
                 activateTab(tabsClone[tabsClone.length - 1])
             } else {
+                // clear the location request tree
+                props.history.push(window.location.pathname)
                 setActiveRequest(null as unknown as any);
                 setRequestTree('')
             }
-           
-        
+
+
         }
-       
-    
+
+
 
         setTabs(tabsClone)
 
     }
-    function activateTab(tab: string) {
-        if (tab == requestTree) {
+    function activateTab(tree: string) {
+        if (tree == requestTree) {
             return;
         }
         if (!saved) {
             save()
         }
-        const ids = tab.split('/')
+            // update the location request tree
+        props.history.push(window.location.pathname + '?requestTree=' + tree)
+        props.setActiveTree(tree)
+        const ids = tree.split('/')
         const id = ids[ids.length - 1]
 
         setActiveRequest(CollectionsService.getRequestFromId(id))
-        setRequestTree(tab)
+        setRequestTree(tree)
 
 
 
@@ -147,7 +172,7 @@ function Request(props: any) {
     function tabTreeToName(tree: string) {
         const ids = tree.split('/')
         const id = ids[ids.length - 1]
-        return CollectionsService.getRequestFromId(id).name
+        return CollectionsService.getRequestFromId(id)?.name
     }
 
     function action(type: string) {
@@ -369,4 +394,4 @@ const mapStateToProps = (state: any) => ({
 })
 
 
-export default connect(mapStateToProps, { setTitle })(Request)
+export default connect(mapStateToProps, { setTitle, setActiveTree })(Request)

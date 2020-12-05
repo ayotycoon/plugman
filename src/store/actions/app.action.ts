@@ -4,7 +4,8 @@ export const types = {
    SETAPPFONT : 'SETAPPFONT',
     SETUSERDATA : 'SETUSERDATA',
     SETDARKMODE : 'SETDARKMODE',
-    SETFINISHEDAUTHENTICATIONATTEMPT: 'SETFINISHEDAUTHENTICATIONATTEMPT'
+    SETACTIVETREE : 'SETACTIVETREE',
+ 
 }
 const isPc = window.innerWidth > 800;
 export const setTitle = (data: any) => (dispatch: any) => {
@@ -56,17 +57,19 @@ export const setUserData = (data: any) => (dispatch: any) => {
 
    
 }
-export const setFinishedAuthenticationAttempt = () => (dispatch: any) => {
+export const setActiveTree = (data: any) => (dispatch: any) => {
   
 
         dispatch({
-            type: types.SETFINISHEDAUTHENTICATIONATTEMPT
+            type: types.SETACTIVETREE,
+            payload: data
         })
 
 
 
    
 }
+
 export const toggleDarkMode = () => (dispatch: any) => {
     
 

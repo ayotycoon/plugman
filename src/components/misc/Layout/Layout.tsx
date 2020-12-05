@@ -3,7 +3,7 @@ import './Layout.scss'
 import { Route, Redirect, Link, Switch } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { loading } from '../../../store/actions/network.action'
-import { setUserData, toggleDarkMode, setFinishedAuthenticationAttempt } from '../../../store/actions/app.action'
+import { setUserData, toggleDarkMode, setActiveTree } from '../../../store/actions/app.action'
 
 import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../../Providers/core.service';
 
@@ -43,7 +43,7 @@ function Layout(props: any) {
 
     const [sidebarMin, setSidebarMin] = useState(!isPc) //isPc
     const [activeNavIndex, setActiveNavIndex] = useState(0)
-    const [activeTree, setActiveTree] = useState('')
+
     const [socketUrl, setSocketUrl] = useState(storage.serverUrl.get() || '')
     const [lastSelectedFolderTree, setLastSelectedFolderTree] = useState('/')
     const [collections, setCollections] = useState([] as any[])
@@ -54,10 +54,12 @@ function Layout(props: any) {
     const collectionsModified = useRef(0)
 
     const darkMode = props.app.darkMode;
-
+    const activeTree = props.app.activeTree;
+    
     function toggleDarkMode() {
         props.toggleDarkMode()
     }
+
 
 
     useEffect(() => {
@@ -183,16 +185,20 @@ function Layout(props: any) {
 
             try {
 
-
+                if (tree == activeTree) {
+                    return
+                }
 
                 const request = CollectionsService.treeDataModifier({ emit: false }, tree).c
 
                 props.history.push(window.location.pathname + '?requestTree=' + tree)
-                setActiveTree(tree)
 
-                sendToCollectionObs.next({ request, tree })
+                props.setActiveTree(tree)
+
+                sendToCollectionObs.next({ type: 'new-request', request, tree })
 
             } catch (e) {
+                props.history.push(window.location.pathname)
 
             }
 
@@ -215,7 +221,7 @@ function Layout(props: any) {
                 }
 
             })
-
+            sendToCollectionObs.next({ type: 'del-request',  tree })
             socketService.removeFromTrackerIfExist(idFromTree(tree))
             CollectionsService.generateRequestHash()
             CollectionsService.persist()
@@ -367,11 +373,11 @@ function Layout(props: any) {
                                     isFolder: false
 
                                 })
-                            }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}> 
-                            
+                            }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}>
+
                                 <TypePill type={(collection as any).type} />
-                                 
-                                 {collection.name}</div>
+
+                                {collection.name}</div>
                         </>
                 }
 
@@ -423,7 +429,7 @@ function Layout(props: any) {
                                     {!sidebarMin && <a className='ml-2 text-color-default' target="_blank" href='https://github.com/ayotycoon/plugman'><i className='fab fa-github'></i></a>}
                                     {!sidebarMin && <small className='d-block text-right text-color-default' >
                                         v {envJson.version}
-                                        </small>}
+                                    </small>}
 
                                 </span>
 
@@ -486,11 +492,11 @@ function Layout(props: any) {
 
                         }
 
-                       
 
-                         
 
-                    
+
+
+
 
                         <div className={'p-2 ' + (sidebarMin ? 'd-none' : '')} style={{ position: 'absolute', bottom: '30px' }}>
                             <input onChange={(e: any) => {
@@ -519,7 +525,7 @@ function Layout(props: any) {
                         <span app-data-intro='Displays the current page you are on. Can also click here to show or hide sidebar' app-data-step='2' className='small '>
                             <span className='change-in-dark-1'>
                                 <b  >  {props.app.title.title || <>Inngle</>}
-                           
+
 
                                     {props.app.title.icon &&
 
@@ -538,8 +544,8 @@ function Layout(props: any) {
 
                                 <i style={{ position: 'relative', top: '3px' }} className=' fa fa-sync spin mr-2'></i>
                             }
-                           
-                           
+
+
                             <span className='cursor text-center'>
                                 <span style={{ top: '5px', position: 'relative' }} onClick={toggleDarkMode} className='pl-2'>
 
@@ -620,4 +626,4 @@ const mapStateToProps = (state: any) => ({
     socket: state.socket
 })
 
-export default connect(mapStateToProps, { loading, setUserData, toggleDarkMode, setFinishedAuthenticationAttempt })(Layout)
+export default connect(mapStateToProps, { loading, setUserData, toggleDarkMode, setActiveTree })(Layout)

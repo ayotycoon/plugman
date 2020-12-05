@@ -10,6 +10,7 @@ const initialState = {
     userData: {
         name: 'ayo'
     },
+    activeTree: '',
     finishedAuthenticationAttempt: false,
     darkMode: darkMode.get() === 'true'
 
@@ -34,6 +35,10 @@ export default (state = initialState, action: any) => {
             return {
                 ...state, darkMode: !state.darkMode
             }
+        case types.SETACTIVETREE:
+
+          
+            return {...state, activeTree: action.payload}
 
 
         default:
