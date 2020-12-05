@@ -77,8 +77,8 @@ function Request(props: any) {
                     break;
                     case 'del-request':
               
-                        if(data.tree == props.app.activeTree){
-                            deleteTab(props.app.activeTree)
+                        if(tabs.indexOf(data.tree) != -1){
+                            deleteTab(data.tree)
                         }
             }
 

@@ -2,24 +2,24 @@ import React, { useState, useEffect, useRef } from 'react'
 import './Layout.scss'
 import { Route, Redirect, Link, Switch } from 'react-router-dom';
 import { connect } from 'react-redux'
-import { loading } from '../../../store/actions/network.action'
-import { setUserData, toggleDarkMode, setActiveTree } from '../../../store/actions/app.action'
+import { loading } from '../../store/actions/network.action'
+import { setUserData, toggleDarkMode, setActiveTree } from '../../store/actions/app.action'
 
-import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../../Providers/core.service';
+import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../Providers/core.service';
 
-import * as envJson from '../../../env.json'
-import { toaster } from '../../../Providers/core.service'
+import * as envJson from '../../env.json'
+import { toaster } from '../../Providers/core.service'
 
-import DropdownClick from '../DropdownClick/DropdownClick';
+import DropdownClick from '../misc/DropdownClick/DropdownClick';
 
 
-import * as storage from '../../../Providers/storage.service'
-import socketService from '../../../Providers/socket.service';
-import Request from '../../modules/Request/Request';
-import { CollectionFolder, CollectionRequest } from '../../types';
-import CollectionsService, { collectionsObs } from '../../../Providers/Collections.service';
+import * as storage from '../../Providers/storage.service'
+import socketService from '../../Providers/socket.service';
+import Request from '../modules/Request/Request';
+import { CollectionFolder, CollectionRequest } from '../types';
+import CollectionsService, { collectionsObs } from '../../Providers/Collections.service';
 import { setTimeout } from 'timers';
-import TypePill from '../TypePill/TypePill';
+import TypePill from '../misc/TypePill/TypePill';
 
 
 

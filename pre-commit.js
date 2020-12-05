@@ -13,12 +13,21 @@ function replaceAt(str, index, ch) {
 }
 
 
-const lastIndex = prevVersion.length -1
 
 
 
 
-const newVersion = replaceAt(prevVersion, lastIndex, parseInt(prevVersion[lastIndex]) + 1)
+
+let newVersion = ''
+
+prevVersion.split('.').forEach((n, i) => {
+    if(i <2){
+        newVersion+=n
+        newVersion+='.'
+    }else {
+        newVersion += (parseInt(n)+1)
+    }
+})
 
 const newEnv = {
     ...envJson, version: newVersion
