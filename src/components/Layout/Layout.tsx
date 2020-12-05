@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { loading } from '../../store/actions/network.action'
 import { setUserData, toggleDarkMode, setActiveTree } from '../../store/actions/app.action'
 
-import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../Providers/core.service';
+import { confirmer, sendToCollectionObs, getId, prompter } from '../../Providers/core.service';
 
 import * as envJson from '../../env.json'
 import { toaster } from '../../Providers/core.service'
@@ -55,7 +55,7 @@ function Layout(props: any) {
 
     const darkMode = props.app.darkMode;
     const activeTree = props.app.activeTree;
-    
+
     function toggleDarkMode() {
         props.toggleDarkMode()
     }
@@ -221,7 +221,7 @@ function Layout(props: any) {
                 }
 
             })
-            sendToCollectionObs.next({ type: 'del-request',  tree })
+            sendToCollectionObs.next({ type: 'del-request', tree })
             socketService.removeFromTrackerIfExist(idFromTree(tree))
             CollectionsService.generateRequestHash()
             CollectionsService.persist()
@@ -352,7 +352,7 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    isFolder: true
+                                    type:'folder'
 
                                 })
                             }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
@@ -370,7 +370,7 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    isFolder: false
+                                    type:'request'
 
                                 })
                             }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}>
@@ -392,12 +392,12 @@ function Layout(props: any) {
     function ContextMenu(props: any) {
 
         return (
-            <div className={' border text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
+            <div className={'border rounded text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
 
-                {contextMenu.isFolder && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree)} className='p-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {contextMenu.isFolder && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree)} className='p-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
-                <div onClick={() => onCollectionEvent('rename', contextMenu.tree)} className='p-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>
-                <div onClick={() => onCollectionEvent('delete', contextMenu.tree)} className='p-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>
+                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
+                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request' ) && <div onClick={() => onCollectionEvent('rename', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request') &&<div onClick={() => onCollectionEvent('delete', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
             </div>
         )
@@ -480,12 +480,26 @@ function Layout(props: any) {
                                         onCollectionEvent('create-folder', lastSelectedFolderTree || '/');
                                     }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
                                 </div>
-                                <div
-                                    style={{ height: 'calc(100vh - 350px)', overflowY: 'auto' }}>
-                                    <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')} style={{ marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', overflow: 'auto' }}>
-                                        {contextMenu && <ContextMenu />}
+                                <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')}
+                                    style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', }}>
 
-                                        {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
+                                    {contextMenu && <ContextMenu />}
+
+                                    {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
+
+                                    <div
+                                    onContextMenu={(e)=>{
+                                        setContextMenuF({
+                                            tree:'/',
+                                            x: e.pageX,
+                                            y: e.pageY,
+                                            type: 'blank'
+
+                                        })
+                                    }}
+                                    
+                                    className='h-100'>
+
                                     </div>
                                 </div>
                             </div>
