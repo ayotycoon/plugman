@@ -54,6 +54,12 @@
     "@types/socket.io-client": "^1.4.33",
     "bootstrap": "4.1.3",
     "node-sass": "4.13.1",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "husky": "^4.3.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "ts-node ./pre-commit.ts"
+    }
   }
 }

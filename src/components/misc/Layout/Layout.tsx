@@ -8,7 +8,7 @@ import { setNotifications } from '../../../store/actions/notification.action'
 
 import { refreshUserDataObs, confirmer, sendToCollectionObs, getId, prompter } from '../../../Providers/core.service';
 
-
+import * as envJson from '../../../env.json'
 import { toaster } from '../../../Providers/core.service'
 
 import DropdownClick from '../DropdownClick/DropdownClick';
@@ -351,7 +351,7 @@ function Layout(props: any) {
                                 })
                             }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
 
-                            {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={getId()} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
+                            {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
 
                         </>
                         :
@@ -412,7 +412,7 @@ function Layout(props: any) {
 
 
                         className={'ml-2 mt-2 mb-2 sidebar border box-shadow pt-3 ' + (darkMode ? 'bg-app-dark' : 'bg-app-default')} >
-                        <div className='pl-4  sidebar-logo text-color-default mb-4'>
+                        <div className='pl-4  sidebar-logo text-color-default mb-2'>
                             <div className='d-inline-block sidebar-nav-inner'>
                                 <span
                                     style={{ marginLeft: '-5px' }}
@@ -423,6 +423,9 @@ function Layout(props: any) {
                                         {!sidebarMin && <b className='text-dark pt-2' style={{ fontSize: '25px' }}>PlugMan 🚀 </b>}
                                     </span>
                                     {!sidebarMin && <a className='ml-2 text-color-default' target="_blank" href='https://github.com/ayotycoon/plugman'><i className='fab fa-github'></i></a>}
+                                    {!sidebarMin && <small className='d-block text-right text-color-default' >
+                                        v {envJson.version}
+                                        </small>}
 
                                 </span>
 
@@ -478,7 +481,7 @@ function Layout(props: any) {
                                     <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')} style={{ marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', overflow: 'auto' }}>
                                         {contextMenu && <ContextMenu />}
 
-                                        {collections.map((collection, i) => <CollectionRenderer key={getId()} data={collection} />)}
+                                        {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
                                     </div>
                                 </div>
                             </div>

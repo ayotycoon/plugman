@@ -17,7 +17,6 @@ const log = console.log;
 console.log = (...args : any) => {
 
    if(process.env.NODE_ENV !== 'development'){
-
     return
    }
     log(...args);
