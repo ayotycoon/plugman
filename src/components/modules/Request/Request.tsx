@@ -107,15 +107,23 @@ function Request(props: any) {
 
     }
     function deleteTab(tab: string) {
-        console.log('delete ', tab)
+        const tabsClone = tabs.filter(t => t != tab);
+   
 
         if (tab == requestTree) {
             save()
-            setActiveRequest(null as unknown as any);
-            setRequestTree('')
+
+            if (tabsClone.length > 0) {
+                activateTab(tabsClone[tabsClone.length - 1])
+            } else {
+                setActiveRequest(null as unknown as any);
+                setRequestTree('')
+            }
+           
+        
         }
-        const tabKeys = Array.from(tabs.keys());
-        const tabsClone = tabs.filter(t => t != tab);
+       
+    
 
         setTabs(tabsClone)
 

@@ -13,6 +13,16 @@ import Overlay from './components/misc/Overlay/Overlay';
 import { possibleResizeObs } from './Providers/core.service';
 import {  DebounceTime } from './Providers/helpers';
 
+const log = console.log;
+console.log = (...args : any) => {
+
+   if(process.env.NODE_ENV !== 'development'){
+
+    return
+   }
+    log(...args);
+
+}
 
 monaco
     .init()

@@ -327,6 +327,7 @@ function Layout(props: any) {
     function CollectionRenderer(props: any) {
         const collection: CollectionFolder | CollectionRequest = props.data;
 
+        // handles deleted collections
         if (!collection) { return <></> }
         const tree = (props.tree || '') + ('/' + collection.id);
         const treeName = (props.treeName || '') + ('/' + collection.name);
@@ -350,7 +351,7 @@ function Layout(props: any) {
                                 })
                             }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
 
-                            {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
+                            {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={getId()} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
 
                         </>
                         :
@@ -477,7 +478,7 @@ function Layout(props: any) {
                                     <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')} style={{ marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', overflow: 'auto' }}>
                                         {contextMenu && <ContextMenu />}
 
-                                        {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
+                                        {collections.map((collection, i) => <CollectionRenderer key={getId()} data={collection} />)}
                                     </div>
                                 </div>
                             </div>
