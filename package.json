@@ -27,6 +27,7 @@
     "start": "react-scripts start",
     "build": "CI=false react-scripts build && mv _redirects ./build",
     "test": "react-scripts test",
+    "deploy": "node ./auto-deployment.js",
     "eject": "react-scripts eject"
   },
 
@@ -59,8 +60,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "node ./pre-commit.js",
-      "post-commit": "node ./post-commit.js"
+  
     }
   }
 }
