@@ -9,8 +9,7 @@ import CollectionsService from '../../../Providers/Workspace.service';
 import socketService from '../../../Providers/socket.service';
 import Activity from '../Activity/Activity';
 import Editor, { ControlledEditor } from '@monaco-editor/react';
-import { request } from 'http';
-
+import * as envJson from '../../../env.json'
 
 
 function Request(props: any) {
@@ -92,6 +91,13 @@ function Request(props: any) {
 
         ))
         props.setTitle(activeRequest ? activeRequest.name : '')
+if(envJson.prod && !saved){
+    window.onbeforeunload = function (event: any) {
+        return confirm("Confirm refresh");
+    };
+
+}
+     
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
@@ -269,7 +275,7 @@ function Request(props: any) {
 
                                         </div>
 
-                                        <input type="text" disabled={activeRequest.type == 'listen' && alreadyListening} value={activeRequest.event} name="event" onChange={handleChange} className="form-control" placeholder={activeRequest.type == 'emit' ? "Add emitter" : "Add listener"} />
+                                        <input type="text" disabled={activeRequest.type == 'listen' && alreadyListening} value={activeRequest.event} name="event" onChange={handleChange} className="form-control" placeholder={activeRequest.type == 'emit' ? "Add emit event" : "Add listen event"} />
                                     </div>
 
 

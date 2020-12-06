@@ -30,7 +30,7 @@ prevVersion.split('.').forEach((n, i) => {
 })
 
 const newEnv = {
-    ...envJson, version: newVersion
+    ...envJson, prod:true,version: newVersion
 }
 
 writeFileSync(path.resolve(__dirname,'./src/env.json'), JSON.stringify(newEnv));

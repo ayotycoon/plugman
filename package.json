@@ -59,7 +59,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "node ./pre-commit.js"
+      "pre-commit": "node ./pre-commit.js",
+      "post-commit": "node ./post-commit.js"
     }
   }
 }

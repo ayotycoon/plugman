@@ -481,7 +481,7 @@ function Layout(props: any) {
                             <div className='mt-1'>{!props.socket.status.connected ? <> <button onClick={() => {
                                 WorkspaceService.setServerUrl(socketUrl);
                                 socketService.initialize(socketUrl)
-                            }} className='btn btn-sm btn-primary'>Connect</button>
+                            }} disabled={!socketUrl} className='btn btn-sm btn-primary'>Connect</button>
                                 <br />
                                 <small onClick={() => {
                                     socketService.initializeAndListen(socketUrl)

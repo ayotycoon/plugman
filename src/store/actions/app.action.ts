@@ -12,7 +12,7 @@ export const setTitle = (data: any) => (dispatch: any) => {
   let title = data.title || data
   const image = data.image || ''
   const icon = data.icon || ''
-    document.title = `${title}   - Plugman `;
+    document.title = `Plugman - ${title} `;
 
     if(!isPc && title.length > 20){
         title = (title as string).substring(0, 20) + ' ...'
