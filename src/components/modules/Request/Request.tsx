@@ -5,7 +5,7 @@ import { setTitle, setActiveTree } from '../../../store/actions/app.action'
 import DropdownClick from '../../misc/DropdownClick/DropdownClick';
 import { sendToCollectionObs, toaster } from '../../../Providers/core.service';
 import { CollectionRequest } from '../../types';
-import CollectionsService from '../../../Providers/Collections.service';
+import CollectionsService from '../../../Providers/Workspace.service';
 import socketService from '../../../Providers/socket.service';
 import Activity from '../Activity/Activity';
 import Editor, { ControlledEditor } from '@monaco-editor/react';
@@ -27,11 +27,7 @@ function Request(props: any) {
     const cells = activeRequest && activeRequest.type == 'emit' ? ['EmitBody', 'Script'] : ['ListenBody', 'Script']
 
 
-    useEffect(() => {
-        props.setTitle('Request');
-
-
-    }, [])
+   
     useEffect(() => {
 
 
@@ -41,7 +37,7 @@ function Request(props: any) {
             }
 
             switch (data.type) {
-                case 'new-request':
+                case 'open-request':
 
                     // if tab doesnt exist before, create a new pne
                     if (tabs.indexOf(data.tree) == -1) {
@@ -73,6 +69,7 @@ function Request(props: any) {
                     }
                     setActiveRequest(data.request)
                     setRequestTree(data.tree)
+                    
 
                     break;
                 case 'del-request':
@@ -80,6 +77,13 @@ function Request(props: any) {
                     if (tabs.indexOf(data.tree) != -1) {
                         deleteTab(data.tree)
                     }
+                    break;
+                case 'rename-request':
+
+                    if (data.tree == requestTree) {
+                        setActiveRequest({...activeRequest,name})
+                    }
+                    break;
             }
 
 
@@ -87,6 +91,7 @@ function Request(props: any) {
         }
 
         ))
+        props.setTitle(activeRequest ? activeRequest.name : '')
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
@@ -160,6 +165,7 @@ function Request(props: any) {
         // update the location request tree
         props.history.push(window.location.pathname + '?requestTree=' + tree)
         props.setActiveTree(tree)
+      
         const ids = tree.split('/')
         const id = ids[ids.length - 1]
 

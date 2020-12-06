@@ -17,24 +17,16 @@ import * as storage from '../../Providers/storage.service'
 import socketService from '../../Providers/socket.service';
 import Request from '../modules/Request/Request';
 import { CollectionFolder, CollectionRequest } from '../types';
-import CollectionsService, { collectionsObs } from '../../Providers/Collections.service';
+import CollectionsService, { foldersObs, WorkspaceService } from '../../Providers/Workspace.service';
 import { setTimeout } from 'timers';
 import TypePill from '../misc/TypePill/TypePill';
+import WorkspaceToggle from '../misc/WorkspaceToggle/WorkspaceToggle';
 
 
 
 const isPc = window.innerWidth > 800;
 
-const navLinks = [
 
-    {
-        name: 'Collections',
-        link: '/request',
-        fa: ' fa fa-th'
-    },
-
-
-]
 
 function Layout(props: any) {
 
@@ -44,15 +36,15 @@ function Layout(props: any) {
     const [sidebarMin, setSidebarMin] = useState(!isPc) //isPc
     const [activeNavIndex, setActiveNavIndex] = useState(0)
 
-    const [socketUrl, setSocketUrl] = useState(storage.serverUrl.get() || '')
+    const [socketUrl, setSocketUrl] = useState(WorkspaceService.getServerUrl() || '')
     const [lastSelectedFolderTree, setLastSelectedFolderTree] = useState('/')
     const [collections, setCollections] = useState([] as any[])
-    const [contextMenu, setContextMenu] = useState(null as unknown as any)
-    const activenav = navLinks[activeNavIndex];
+    const [contextMenu, setContextMenu] = useState(null as unknown as any);
     const contextRef = useRef(null as unknown as any)
     const lastFolderRef = useRef(null as unknown as any)
     const collectionsModified = useRef(0)
 
+    
     const darkMode = props.app.darkMode;
     const activeTree = props.app.activeTree;
 
@@ -80,7 +72,7 @@ function Layout(props: any) {
         }
 
 
-        collectionsObs.subscribe((data: any) => {
+        foldersObs.subscribe((data: any) => {
 
             setCollections(data)
         })
@@ -141,11 +133,7 @@ function Layout(props: any) {
     }, [sidebarMin])
     const initLoadFinished = props.app.finishedAuthenticationAttempt;
     const user = props.app.userData;
-    const isGuest = initLoadFinished && !user;
 
-
-
-    const notifications = (props.notifications as any[] || []).filter(_ => !_.read);
     function sideBarBlur() {
 
         if (isPc) {
@@ -165,14 +153,11 @@ function Layout(props: any) {
         return h[h.length - 1]
 
     }
-    function changeNav(n: number) {
-        const nextIndex = activeNavIndex + n;
-        props.history.push(navLinks[nextIndex].link)
-        // to={activenav.link}
-        setActiveNavIndex(nextIndex)
+    function changeCollection(id: number) {
+    
     }
 
-    async function onCollectionEvent(type: string, tree: string, treeName?: string) {
+    async function onCollectionEvent(type: string, tree: string, treeName?: string, other?:string) {
 
 
         if (type == 'toggleFolder') {
@@ -195,7 +180,7 @@ function Layout(props: any) {
 
                 props.setActiveTree(tree)
 
-                sendToCollectionObs.next({ type: 'new-request', request, tree })
+                sendToCollectionObs.next({ type: 'open-request', request, tree })
 
             } catch (e) {
                 props.history.push(window.location.pathname)
@@ -227,12 +212,14 @@ function Layout(props: any) {
             CollectionsService.persist()
         }
         else if (type == 'rename') {
-            const name = await prompter('New Name')
+     
+            const name = await prompter('New Name',other)
 
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 data.name = name
 
             })
+            sendToCollectionObs.next({ type: 'rename-request', tree, name })
 
             CollectionsService.generateRequestHash()
             CollectionsService.persist()
@@ -352,7 +339,8 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    type:'folder'
+                                    type:'folder',
+                                    other: collection.name
 
                                 })
                             }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
@@ -370,7 +358,8 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    type:'request'
+                                    type:'request',
+                                    other: collection.name
 
                                 })
                             }} className={'p-1 hover-collection ' + (tree == activeTree ? 'bg-dark-light' : '')} onClick={() => onCollectionEvent('openRequest', tree, treeName)}>
@@ -394,10 +383,10 @@ function Layout(props: any) {
         return (
             <div className={'border rounded text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
 
-                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'request' ) && <div onClick={() => onCollectionEvent('rename', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'request') &&<div onClick={() => onCollectionEvent('delete', contextMenu.tree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
+                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
+                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request' ) && <div onClick={() => onCollectionEvent('rename', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request') &&<div onClick={() => onCollectionEvent('delete', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
             </div>
         )
@@ -437,39 +426,11 @@ function Layout(props: any) {
 
 
                         </div>
-                        {user && <div >
-
-                            {
-                                <div className="navbar-ticker border-top border-bottom pt-2 pb-2">
-                                    <div className='navbar-ticker-left text-color-default'>
-                                        {activeNavIndex > 0 && <div onClick={() => changeNav(-1)} className='w-100 h-100'>
-                                            <i className='fa fa-angle-left'></i>
-                                        </div>}
-
-
-                                    </div>
-                                    <div className='navbar-ticker-main sidebar-nav text-color-default text-dark'>
-
-                                        <div className='sidebar-nav-inner'>
-                                            <i className={activenav.fa}></i>
-                                            <span className='sidebar-text'>{activenav.name}</span>
-                                        </div>
-
-                                    </div>
-                                    <div className='navbar-ticker-right text-color-default'>
-                                        {(activeNavIndex < navLinks.length - 1) && <div onClick={() => changeNav(1)} className='w-100 h-100'>
-                                            <i className='fa fa-angle-right'></i>
-                                        </div>}
-                                    </div>
-                                </div>
-
-                            }
-
-                        </div>}
+                       
 
 
 
-                        {activeNavIndex == 0 &&
+                     
 
                             <div>
                                 <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
@@ -504,7 +465,7 @@ function Layout(props: any) {
                                 </div>
                             </div>
 
-                        }
+                        
 
 
 
@@ -518,7 +479,7 @@ function Layout(props: any) {
                             }} disabled={props.socket.status.connected} className='form-control small' value={socketUrl} placeholder='Enter socket url' />
 
                             <div className='mt-1'>{!props.socket.status.connected ? <> <button onClick={() => {
-                                storage.serverUrl.set(socketUrl);
+                                WorkspaceService.setServerUrl(socketUrl);
                                 socketService.initialize(socketUrl)
                             }} className='btn btn-sm btn-primary'>Connect</button>
                                 <br />
@@ -538,7 +499,7 @@ function Layout(props: any) {
                     <div className={'topbar ' + (!darkMode ? 'bg-app-default' : 'bg-app-dark')}>
                         <span app-data-intro='Displays the current page you are on. Can also click here to show or hide sidebar' app-data-step='2' className='small '>
                             <span className='change-in-dark-1'>
-                                <b  >  {props.app.title.title || <>Inngle</>}
+                                <b  >  {props.app.title.title || <>...</>}
 
 
                                     {props.app.title.icon &&
@@ -558,6 +519,9 @@ function Layout(props: any) {
 
                                 <i style={{ position: 'relative', top: '3px' }} className=' fa fa-sync spin mr-2'></i>
                             }
+
+                          
+                        <WorkspaceToggle />
 
 
                             <span className='cursor text-center'>

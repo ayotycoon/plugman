@@ -2,8 +2,7 @@
 
 const STORAGE_CONSTANTS = {
     DARK_MODE: 'dark-mode',
-    DONT_ASK_DARK_MODE: 'DONT-ASK-dark-mode',
-    SERVER_URL: 'SERVER-URL',
+    DONT_ASK_DARK_MODE: 'DONT-ASK-dark-mode'
  
 
 }
@@ -27,21 +26,6 @@ function setBodyDarkMode(mode: string | boolean) {
 
 
 
-export const serverUrl = {
-    set: (mode: string) => {
-
-
-        return localStorage.setItem(STORAGE_CONSTANTS.SERVER_URL, mode)
-    },
-    get: () => {
-        const mode = localStorage.getItem(STORAGE_CONSTANTS.SERVER_URL)
-     
-
-        return mode
-    }
-
-
-}
 
 
 export const darkMode = {

@@ -1,0 +1,257 @@
+import { getId } from './index';
+import { BehaviourSubject } from './helpers';
+
+let activeWorkSpaceKey = 'default-workspace'
+let activeWorkspaceData: {
+    name: string;
+    serverUrl: string;
+    version: string;
+    folders: any[]
+
+} = {
+    name: '',
+    serverUrl: '',
+    version: '',
+    folders: []
+
+}
+const idToRequestHash: any = {
+
+}
+const defaultFolderStructure = {
+    name: 'default',
+    version: '1.1',
+    serverUrl: '',
+    folders: [
+    {
+        id: getId(),
+        name: 'introduction to emit requests',
+        isFolder: false,
+        event: "message",
+        type: "emit",
+        emitBody: `{"foo": "bar"}`
+    },
+    {
+        id: getId(),
+        name: 'introduction to listen requests',
+        isFolder: false,
+        event: "message",
+        type: "listen",
+        listenBody: `{"foo": "bar}`
+    },
+    {
+        id: getId(),
+        name: 'Yep ! a folder 😉',
+        isFolder: true,
+        children:[
+            {
+                id: getId(),
+                name: 'i am a request in a folder',
+                isFolder: false,
+                event: "message_listener",
+                type: "listen",
+                listenBody: `{"foo": "bar}`
+            },
+        ],
+    },
+    {
+        id: getId(),
+        name: 'Right click on me to see folder options',
+        isFolder: true,
+        children:[
+        
+        ],
+    }
+]}
+
+const defaultWorkspacesStructure = {
+    'default-workspace':{name:'Default', key: 'default-workspace'}
+}
+let workspaces: any;
+export class WorkspaceService {
+    public static persist() {
+        localStorage.setItem(activeWorkSpaceKey, JSON.stringify(activeWorkspaceData))
+
+    }
+    public static load() {
+        activeWorkspaceData = JSON.parse(localStorage.getItem(activeWorkSpaceKey) || JSON.stringify(defaultFolderStructure))
+
+    }
+    // ww
+    public static loadWorkspaces() {
+        workspaces = JSON.parse(localStorage.getItem('workspaces') || JSON.stringify(defaultWorkspacesStructure))
+        activeWorkSpaceKey = localStorage.getItem('active-workspace') || activeWorkSpaceKey
+
+       
+    }
+    public static getWorkspaces() {
+        return  workspaces;
+
+    }
+    public static changeWorkspace(key:string) {
+        if(key == activeWorkSpaceKey){
+            return
+        }
+        localStorage.setItem('active-workspace', key)
+        window.location.reload()
+
+    }
+    public static addWorkspace(name:string) {
+        name = name.substring(0,13)
+        const key: string = getId()
+        const _workspace = this.getWorkspaces()
+        _workspace[key]={name,key}
+
+        localStorage.setItem('workspaces', JSON.stringify(_workspace))
+        localStorage.setItem('active-workspace', key)
+        this.changeWorkspace(key);
+
+    }
+    public static getActiveWorkspaceKey() {
+        return  activeWorkSpaceKey
+
+    }
+    public static getServerUrl(){
+
+        return activeWorkspaceData.serverUrl;
+
+    }
+    public static setServerUrl(url:string){
+
+        activeWorkspaceData.serverUrl = url
+        this.persist()
+
+    }
+
+
+    private static setDataFolders(folders: any[]) {
+        activeWorkspaceData.folders = folders;
+    }
+    public static generateRequestHash() {
+        function folderParse(dd: any[]) {
+            dd.forEach(d => {
+                if (d.isFolder) {
+                    folderParse(d.children || [])
+                } else {
+                    idToRequestHash[d.id] = d
+                }
+            })
+
+        }
+        folderParse(activeWorkspaceData.folders)
+
+    }
+    public static getRequestHash() {
+        return idToRequestHash;
+
+
+
+    }
+    public static getRequestFromId(tree: string) {
+
+        return idToRequestHash[tree]
+
+    }
+    public static treeDataModifier(options: any = {}, tree: string, cb?: any, localFolders?: any[]): any {
+        const treeSplit = tree.split('/').filter(_ => _)
+
+        let treeIndex = 0;
+        let targetC;
+
+
+        function treeDataModifierF(cb?: any, localFolders?: any[]): any {
+            let lastLoop = false;
+            if (treeIndex === (treeSplit.length - 1)) {
+                lastLoop = true
+            }
+            let folderTree: any[] = localFolders || JSON.parse(JSON.stringify(activeWorkspaceData.folders));
+
+
+            if (treeSplit.length === 0) {
+
+                if (cb) {
+                    cb(null, folderTree)
+
+                }
+                WorkspaceService.setDataFolders(folderTree);
+                if (options.emit) {
+
+                    foldersObs.next(activeWorkspaceData.folders);
+                }
+                return { c: null, folderTree }
+
+            }
+
+
+
+
+
+
+            const id = treeSplit[treeIndex];
+
+
+
+            for (let c of folderTree) {
+                if (c.id === id) {
+                    targetC = c;
+
+                    if (c.isFolder && (treeIndex < (treeSplit.length - 1))) {
+
+                        treeIndex++
+                        treeDataModifierF(cb, c.children)
+
+
+                    }
+
+
+
+                    if (cb && lastLoop) {
+
+                        cb(c, folderTree)
+
+                    }
+                    WorkspaceService.setDataFolders(folderTree);
+                    if (options.emit) {
+
+                        foldersObs.next(activeWorkspaceData.folders);
+                    }
+
+                    return { c: targetC, folderTree }
+
+                }
+            }
+
+
+        }
+
+      
+        try {
+         
+
+            return treeDataModifierF(cb, localFolders)
+            //  data = data.[]
+
+
+        }
+        catch (e) {
+
+            return null
+
+        }
+
+    }
+
+
+
+
+}
+WorkspaceService.loadWorkspaces()
+WorkspaceService.load()
+WorkspaceService.generateRequestHash();
+
+export const foldersObs = new BehaviourSubject(activeWorkspaceData.folders)
+
+
+
+
+export default WorkspaceService

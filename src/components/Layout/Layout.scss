@@ -4,21 +4,7 @@ $topbarHeight: 60px;
 
 .Layout {
    
-    .navbar-ticker {
-        display: flex;
-        .navbar-ticker-left,
-        .navbar-ticker-right {
-            width: 30px;
-            text-align: center;
-        }
 
-        .navbar-ticker-main {
-           // width: calc(100% - 100px) !important
-           flex-grow: 1;
-           overflow: hidden;
-    
-        }
-    }
 
 
 
@@ -49,11 +35,7 @@ $topbarHeight: 60px;
         transition-duration: 0.5s;
     }
     .sidebar-logo {
-        .sidebar-nav-inner {
-        //    font-size: 25px;
-
-            //   background-image: linear-gradient(120deg,white 50%, #ff8438);
-        }
+ 
     }
 
     .sidebar {

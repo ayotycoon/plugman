@@ -1,4 +1,4 @@
-import { CollectionsService } from './Collections.service';
+import { WorkspaceService } from './Workspace.service';
 import { toaster } from './core.service';
 import io from 'socket.io-client';
 import { store } from '../store';
@@ -53,7 +53,7 @@ class SocketService {
     }
     public initializeAndListen(host: string) {
         this.initialize(host, () => {
-            const h = CollectionsService.getRequestHash()
+            const h = WorkspaceService.getRequestHash()
             Object.values(h).forEach((b: any) => {
                 if (b.type === 'emit' && b.event) {
                     this.emit(b.id, b.event, b.emitBody)

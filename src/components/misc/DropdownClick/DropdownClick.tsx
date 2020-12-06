@@ -25,6 +25,7 @@ function DropdownClick(props: any) {
         fn: () => { }
     });
     const componentIsMounted = useRef(true)
+    const oneRef = useRef(null as unknown as HTMLDivElement)
 
 
     function preSetClickedFun(value: boolean) {
@@ -105,18 +106,23 @@ function DropdownClick(props: any) {
         };
     }, []);
 
-
+const prevStyle = props.style || {};
     return (
         <div ref={DropdownClickRef} style={{
+            ...prevStyle,
+
+            verticalAlign: 'top',
             zIndex: clicked ? 5 : 1
         }} className={'DropdownClick ' + (props.block ? 'd-block' : 'd-inline-block')}>
             <div
+            ref={oneRef}
+            
 
                 onClick={() => preSetClickedFun(!clicked)} className='one'>
                 {props.children[0]}
             </div>
             {clicked &&
-                <div className='two'>
+                <div className='two' style={{ width: props.childBlock ? oneRef.current.clientWidth+ 'px' : 'auto'}}>
                     {props.children[1]}
                 </div>}
 

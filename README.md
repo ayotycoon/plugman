@@ -37,7 +37,7 @@ You will also see any lint errors in the console.
 
 The `socket.service.ts` file in `/src/Providers` contains all the socket configuration, emitters and listeners
 
-The `Collections.service.ts` file in `/src/Providers` contains all the Collections data including the requests structure and different objects to keep track of the active state of each requests and folders
+The `Workspace.service.ts` file in `/src/Providers` contains all the Workspace data including the requests structure and different objects to keep track of the active state of each requests and folders
 
 ## Whats left?
 ### Environment variables

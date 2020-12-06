@@ -89,6 +89,7 @@ function keyGen(type: any,event: any){
             }} block={true}>
                 <div className='border pr-3 pl-2 pt-2 pb-2 change-in-dark-1 rounded capitalize input-mimick cursor '>
                     {activeEvents.length == totalEvents.length ? 'All' : (activeEvents.length + " Events")}
+                    <i className='fa fa-angle-down float-right '></i>
                 </div>
 
                 <div className='change-in-dark-1 capitalize p-2 input-mimick'>
