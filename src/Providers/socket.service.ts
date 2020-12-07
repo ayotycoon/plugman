@@ -25,7 +25,7 @@ class SocketService {
     socket: SocketIOClient.Socket;
     // @ts-ignore
     host: string;
-    public initialize(host: string, cb?: any) {
+    private initialize(host: string, cb?: any) {
        
             this.host = host;
             this.socket = io(host)
@@ -51,11 +51,11 @@ class SocketService {
         })
       
     }
-    public initializeAndListen(host: string) {
+    public connect(host: string) {
         this.initialize(host, () => {
             const h = WorkspaceService.getRequestHash()
             Object.values(h).forEach((b: any) => {
-                if (b.type === 'emit' && b.event) {
+                if (b.type === 'emit' && b.event && b.initializeOnConnect) {
                     this.emit(b.id, b.event, b.emitBody)
                 }
                 if (b.type === 'listen' && b.event) {

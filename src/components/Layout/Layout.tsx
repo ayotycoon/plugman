@@ -81,7 +81,7 @@ function Layout(props: any) {
         if (socketUrl) {
 
 
-            socketService.initializeAndListen(socketUrl)
+            socketService.connect(socketUrl)
         }
 
         return () => {
@@ -480,15 +480,8 @@ function Layout(props: any) {
 
                             <div className='mt-1'>{!props.socket.status.connected ? <> <button onClick={() => {
                                 WorkspaceService.setServerUrl(socketUrl);
-                                socketService.initialize(socketUrl)
-                            }} disabled={!socketUrl} className='btn btn-sm btn-primary'>Connect</button>
-                                <br />
-                                <small onClick={() => {
-                                    socketService.initializeAndListen(socketUrl)
-                                }} className='text-primary cursor 
-                                '>Connect and fire all events</small>
-
-                            </> : <button onClick={() => {
+                                socketService.connect(socketUrl)
+                            }} disabled={!socketUrl} className='btn btn-sm btn-primary'>Connect</button> </> : <button onClick={() => {
                                 socketService.disconnect()
                             }} className='btn btn-sm btn-outline-primary'>Disconnect</button>}
                             </div>

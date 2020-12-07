@@ -394,6 +394,14 @@ function Request(props: any) {
                                                 </td>
                                                 <td className='small'>Determines what the body should be sent as for emit requests and also what type of body the listen requests are receiving</td>
                                             </tr>
+                                            <tr>
+
+                                            <td> Initialize On Connect</td>
+                                            <td>{
+                                                // @ts-ignore
+                                                <select name="initializeOnConnect" onChange={handleChange} value={activeRequest.initializeOnConnect || false} className=''>  <option value={true}>Yes</option>   <option value={false}>No</option>  </select>} </td>
+                                                <td className='small'>Determines if this listener should be automatically fired when a connection is made</td>
+                                            </tr>
                                         </tbody>
                                     </table>
 
