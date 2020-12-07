@@ -2,25 +2,26 @@ import React from 'react'
 
 
 export default function Blank(props: any) {
-
+    const isPc = window.innerWidth > 800;
 
     return (
         <div style={{
             height: 'calc(100vh - 200px)',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: isPc ? 'center': '',
 
             //    justifyContent: 'center'
         }}>
 
-            <div className='change-in-dark-1 p-4'>
+            <div className={'change-in-dark-1 ' + (isPc ? 'p-4' : '' )}>
+             
 
                 <span className='h3 d-block text-center'>Open a Request</span>
                     <br />
                 <br />
 
                 <div className='row'>
-                    <div className='col-6 col-md-6'>
+                    <div className='mb-3 col-md-6'>
                         <b className='h4'>How to use</b>
                         <ul className='h6 mt-2'>
                             <li className='mb-2'>Connect  to socket url</li>
@@ -34,17 +35,15 @@ export default function Blank(props: any) {
                         </ul>
 
                     </div>
-                    <div className='col-6 col-md-6'>
-                        <b className='h4'>Using the official demo server </b>
+                    <div className='mb-3 col-md-6'>
+                        <b className='h4'>Testing with socketio demo server </b>
                         <ul className='h6 mt-2'>
                             <li className='mb-2'>Connect  to socket url <code className='small'>https://socketio-chat-h9jt.herokuapp.com/</code></li>
                             <li className='mb-2'>create a listen request <code className='small'>new message</code></li>
                             <li className='mb-2'>Make an emit request  <code className='small'>add user</code> with message body as your username</li>
                             <li className='mb-2'>Make another emit request  <code className='small'>new message</code> with message body</li>
-                          
-         
-                            <li className='mb-2'> Watch the activity bar listen to your events as you emit the <code className='small'>message</code> request </li>
-                       </ul>
+                     <li className='mb-2'> You will not see the <code className='small'>new message</code>  listener emitted back because the demo server does not send back your requests but you will see the messages of other people streaming down the activity bar  </li>
+                     </ul>
 
                     </div></div>
           

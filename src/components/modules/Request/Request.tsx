@@ -22,7 +22,8 @@ function Request(props: any) {
     const [tabs, setTabs] = useState([] as any[])
     const [activeRequest, setActiveRequest] = useState(null as unknown as CollectionRequest);
     const subs = useRef([] as any[])
-    const navbarCriticalChanged = useRef(false);
+    const navbarCriticalChangedRef = useRef(false);
+    const saveKeyRef = useRef(null as unknown as any);
 
     const cells = activeRequest && activeRequest.type == 'emit' ? ['EmitBody', 'Options'] : ['ListenBody', 'Options']
 
@@ -94,14 +95,37 @@ function Request(props: any) {
         props.setTitle(activeRequest ? activeRequest.name : '')
         if (envJson.prod && !saved) {
             window.onbeforeunload = function (event: any) {
-                return confirm("Confirm refresh");
+                if (!saved) {
+                    save()
+                }
+                return true
             };
 
         }
 
+        saveKeyRef.current = function (event: any) {
+            var S: any = 83,
+                activeElement: any = document.activeElement;
+           
+
+            if ((event.key === S || event.keyCode === S) && (event.metaKey || event.ctrlKey) && activeElement.nodeName === 'TEXTAREA') {
+              
+                    event.preventDefault();
+                   if(!saved){
+                       save()
+                   }
+                
+            }
+        }
+
+        document.addEventListener('keydown', saveKeyRef.current);
+    
+
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
+           // document.removeEventListener('keydown', saveKeyRef.current);
+
 
         }
 
@@ -115,7 +139,7 @@ function Request(props: any) {
             setSaved(false);
         }
         if (e.target.name == 'name' || e.target.name == 'type') {
-            navbarCriticalChanged.current = true
+            navbarCriticalChangedRef.current = true
         }
         const clone: any = { ...activeRequest }
         clone[e.target.name] = e.target.value;
@@ -126,9 +150,9 @@ function Request(props: any) {
     }
     function save() {
 
-        CollectionsService.treeDataModifier({ emit: navbarCriticalChanged.current }, requestTree, (d: any) => {
+        CollectionsService.treeDataModifier({ emit: navbarCriticalChangedRef.current }, requestTree, (d: any) => {
 
-            console.log({ d })
+     
             Object.keys(activeRequest).forEach(k => {
                 d[k] = activeRequest[k]
             })
@@ -187,6 +211,7 @@ function Request(props: any) {
         const id = ids[ids.length - 1]
         return CollectionsService.getRequestFromId(id)?.name
     }
+
 
     async function action(type: string) {
         if (!props.socket.status.connected) {

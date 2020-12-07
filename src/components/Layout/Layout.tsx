@@ -239,7 +239,7 @@ function Layout(props: any) {
 
                     })
                 } else {
-                    console.log(collectionTree)
+            
                     collectionTree.push({
                         id: getId(),
                         name,

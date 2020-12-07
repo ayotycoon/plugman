@@ -10,21 +10,25 @@ const DEFAULTS = {
     'listen-connect': true,
     'listen-disconnect': true,
 }
+
 function Activity(props: any) {
-    const [events, setEvents] = useState(DEFAULTS)
+    const [events, setEvents] = useState({} as any)
     const eventsDisplayRef = useRef(null as unknown as HTMLDivElement);
-    function setEventRefF(hash: any, e?: any) {
+    function setEventRefF(hash: any) {
     
-        console.log({hash})
+       
 
-        const c = { ...events }
+  
+        const h = {...hash}
 
-        Object.keys(hash).forEach(key => {
+        Object.keys(events).forEach(key => {
+            const prevValue = events[key]
+    
 
-            if (c[key] == undefined) {
-                c[key] = e ? hash[key] : true
-            }else if(e){
-                c[key] = hash[key] 
+            if (prevValue == undefined) {
+                h[key] =  true
+            }else {
+                h[key] = prevValue
             }
             
 
@@ -34,7 +38,7 @@ function Activity(props: any) {
 
        
 
-        setEvents(c)
+        setEvents(h)
 
     }
 
@@ -42,21 +46,6 @@ function keyGen(type: any,event: any){
     return type + '-' + event
 }
 
-    useEffect(() => {
-        const hash: any = {};
-
-        (Object.values(props.socket.tracker) as any[]).forEach(e => {
-            const key = keyGen(e.type , e.event);
-            hash[key] = true;
-
-
-        });
-     
-        setEventRefF(hash)
-
-
-
-    }, [props.socket.tracker])
 
     useEffect(() => {
 
@@ -71,7 +60,19 @@ function keyGen(type: any,event: any){
 
         }, 500)
 
-    }, [props.socket.activities])
+
+      
+        
+        const hash: any = {...DEFAULTS} ;
+        (Object.values(props.socket.tracker) as any[]).forEach(e => {
+            const key = keyGen(e.type, e.event);
+            hash[key] = true;
+
+        });
+
+        setEventRefF(hash)
+
+    }, [props.socket.activities, props.socket.tracker])
 
  
     const totalEvents = Object.values(events);

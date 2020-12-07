@@ -136,6 +136,7 @@ class SocketService {
   
 
     listen(id: string, event: string) {
+       
         if (listenEventToId[event] ){
             toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i>  A request is already listening to this event "<b>${event}</b>"` })
             return
@@ -153,6 +154,7 @@ class SocketService {
 
         this.socket.on(event, (data: any) => {
          
+            console.log({event})
            
         
             lastListenEvent[event] = (typeof data === 'string' ? data : JSON.stringify(data))
