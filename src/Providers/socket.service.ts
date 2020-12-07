@@ -177,7 +177,7 @@ class SocketService {
 
             })
         }
-        console.log(event, data)
+      
         this.socket.emit(event, data)
 
         this.emitActivity('emit', event,( typeof data == 'string' ? data : JSON.stringify(data)) )

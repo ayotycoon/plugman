@@ -40,7 +40,7 @@ export default function Blank(props: any) {
                             <li className='mb-2'>Connect  to socket url <code className='small'>https://socketio-chat-h9jt.herokuapp.com/</code></li>
                             <li className='mb-2'>create a listen request <code className='small'>new message</code></li>
                             <li className='mb-2'>Make an emit request  <code className='small'>add user</code> with message body as your username</li>
-                            <li className='mb-2'>Make another emit request  <code className='small'>new message</code> with message body  <code className='small'>{'{"username": "selected username","message": "sample message"}'}</code> send the body as object in options</li>
+                            <li className='mb-2'>Make another emit request  <code className='small'>new message</code> with message body</li>
                           
          
                             <li className='mb-2'> Watch the activity bar listen to your events as you emit the <code className='small'>message</code> request </li>
