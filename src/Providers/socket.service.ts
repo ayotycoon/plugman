@@ -58,7 +58,7 @@ class SocketService {
                 if (b.type === 'emit' && b.event && b.initializeOnConnect) {
                     this.emit(b.id, b.event, b.emitBody)
                 }
-                if (b.type === 'listen' && b.event) {
+                if (b.type === 'listen' && b.event && b.initializeOnConnect) {
                     this.listen(b.id, b.event)
                 }
             })

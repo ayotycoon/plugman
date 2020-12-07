@@ -12,7 +12,7 @@ import Editor, { ControlledEditor } from '@monaco-editor/react';
 import * as envJson from '../../../env.json'
 import Blank from '../../misc/Blank/Blank';
 
-const bodyTypes = ["json", "object", "string"]
+const bodyTypes = ["string","json", "object","number"]
 function Request(props: any) {
     const [saved, setSaved] = useState(true);
     const [requestTree, setRequestTree] = useState('');
@@ -220,16 +220,23 @@ function Request(props: any) {
             return
         }
         if (type == 'emit') {
-            let body = activeRequest.emitBody;
+            let body: any = activeRequest.emitBody;
 
 
             try {
                 if (activeRequest.bodyType == 'object') {
                     body = JSON.parse(activeRequest.emitBody)
+                } else if (activeRequest.bodyType == 'number') {
+                    body = parseInt(activeRequest.emitBody)
+                
+                } else if (activeRequest.bodyType == 'json') {
+                    if(!JSON.parse(activeRequest.emitBody)){
+                        throw "invalid json"
+                    }
                 }
 
             } catch (e) {
-                toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Cound not convert body to '${activeRequest.bodyType}'.. sending body as string instead` })
+                toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Could not convert body to '${activeRequest.bodyType}', Sending body as string instead` })
 
 
             }
@@ -390,7 +397,7 @@ function Request(props: any) {
                                             <tr>
 
                                                 <td> Body Type</td>
-                                                <td><select name="bodyType" onChange={handleChange} value={activeRequest.bodyType} className=''> {bodyTypes.map(bodyType => <option value={bodyType}>{bodyType}</option>)} </select>
+                                                <td><select name="bodyType" className='capitalize' onChange={handleChange} value={activeRequest.bodyType}> {bodyTypes.map(bodyType => <option value={bodyType}>{bodyType}</option>)} </select>
                                                 </td>
                                                 <td className='small'>Determines what the body should be sent as for emit requests and also what type of body the listen requests are receiving</td>
                                             </tr>

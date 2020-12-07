@@ -7,7 +7,7 @@ export interface CollectionRequest {
     description: string;
     event: string;
     initializeOnConnect: boolean;
-    bodyType: "json" | "object" | "string";
+    bodyType: "json" | "object" | "string" | "number";
     type: "emit" | "listen" | "emit-and-listen";
     emitBody: string;
     listenerBody: string;
