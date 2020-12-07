@@ -383,7 +383,7 @@ function Request(props: any) {
                                             <tr>
                                                 <th scope="col">Option</th>
                                                 <th scope="col">Value</th>
-                                                <th scope="col">description</th>
+                                                <th scope="col">Description</th>
                                             </tr>
                                         </thead>
                                         <tbody>

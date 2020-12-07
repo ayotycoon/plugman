@@ -40,6 +40,9 @@ The `socket.service.ts` file in `/src/Providers` contains all the socket configu
 The `Workspace.service.ts` file in `/src/Providers` contains all the Workspace data including the requests structure and different objects to keep track of the active state of each requests and folders
 
 ## Whats left?
+### Utilities
+Ability co copy and paste request both with keyboard shortcuts and on mouse click
+
 ### Environment variables
 Variables should be introduced so as to make some modifications easier
 
