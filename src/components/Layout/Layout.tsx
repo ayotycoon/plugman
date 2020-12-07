@@ -21,6 +21,7 @@ import CollectionsService, { foldersObs, WorkspaceService } from '../../Provider
 import { setTimeout } from 'timers';
 import TypePill from '../misc/TypePill/TypePill';
 import WorkspaceToggle from '../misc/WorkspaceToggle/WorkspaceToggle';
+import { copy } from '../../Providers/helpers';
 
 
 
@@ -44,7 +45,7 @@ function Layout(props: any) {
     const lastFolderRef = useRef(null as unknown as any)
     const collectionsModified = useRef(0)
 
-    
+
     const darkMode = props.app.darkMode;
     const activeTree = props.app.activeTree;
 
@@ -154,10 +155,10 @@ function Layout(props: any) {
 
     }
     function changeCollection(id: number) {
-    
+
     }
 
-    async function onCollectionEvent(type: string, tree: string, treeName?: string, other?:string) {
+    async function onCollectionEvent(type: string, tree: string, treeName?: string, other?: string) {
 
 
         if (type == 'toggleFolder') {
@@ -212,8 +213,8 @@ function Layout(props: any) {
             CollectionsService.persist()
         }
         else if (type == 'rename') {
-     
-            const name = await prompter('New Name',other)
+
+            const name = await prompter('New Name', other)
 
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 data.name = name
@@ -239,7 +240,7 @@ function Layout(props: any) {
 
                     })
                 } else {
-            
+
                     collectionTree.push({
                         id: getId(),
                         name,
@@ -279,6 +280,81 @@ function Layout(props: any) {
 
             CollectionsService.generateRequestHash()
             CollectionsService.persist()
+        } else if (type == 'copy') {
+
+            CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
+                if (!data) {
+                    return
+                }
+                copy(JSON.stringify(data))
+
+            })
+
+
+
+
+        } else if (type == 'paste') {
+            const clipboardText = await navigator.clipboard.readText()
+            CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
+
+                try {
+
+                    const parsed = JSON.parse(clipboardText);
+                    if (!parsed) {
+                        throw "error"
+                    }
+                    parsed.name = parsed.name + '_copy';
+                    parsed.id = getId();
+                    if (parsed.isFolder) {
+                        // @ts-ignore
+                        function w(children: any[]) {
+                            // change ids for all children
+                            let childrenRef = children || []
+
+                            for (let i = 0; i < childrenRef.length; i++) {
+
+                                if (childrenRef[i].isFolder) {
+                                    childrenRef[i].id = getId()
+
+                                    if (childrenRef[i].children && childrenRef[i].children.length > 0) {
+                                        w(childrenRef[i].children)
+                                    }
+
+                                } else {
+                                    childrenRef[i].id = getId()
+
+                                }
+
+
+
+                            }
+
+                        }
+
+                        w(parsed.children)
+
+
+                    }
+                    
+
+                    if (data) {
+                        data.children.push(parsed)
+                    } else {
+                        collectionTree.push(parsed)
+                    }
+
+                    CollectionsService.generateRequestHash()
+                    CollectionsService.persist()
+
+                } catch (e) {
+
+                }
+
+
+            })
+
+
+
         }
 
 
@@ -339,7 +415,7 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    type:'folder',
+                                    type: 'folder',
                                     other: collection.name
 
                                 })
@@ -358,7 +434,7 @@ function Layout(props: any) {
                                     tree,
                                     x: e.pageX,
                                     y: e.pageY,
-                                    type:'request',
+                                    type: 'request',
                                     other: collection.name
 
                                 })
@@ -374,19 +450,18 @@ function Layout(props: any) {
         )
 
     }
-    function onContextMenu(type: string, tree: string) {
-        // const sure = await confirmer('are you sure you want to logout ?')
-    }
 
     function ContextMenu(props: any) {
 
         return (
             <div className={'border rounded text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('copy', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-copy mr-2'></i> Copy</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('paste', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-paste mr-2'></i> Paste</div>}
 
-                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {(contextMenu.type=='folder' || contextMenu.type=='blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'request' ) && <div onClick={() => onCollectionEvent('rename', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'request') &&<div onClick={() => onCollectionEvent('delete', contextMenu.tree,contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('rename', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('delete', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
             </div>
         )
@@ -426,46 +501,46 @@ function Layout(props: any) {
 
 
                         </div>
-                       
 
 
 
-                     
 
-                            <div>
-                                <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
-                                    <span title='Create request' onClick={() => {
-                                        onCollectionEvent('create-request', lastSelectedFolderTree || '/');
-                                    }} className='cursor mr-2'><i className='fa fa-file-medical'></i></span>
-                                    <span title='Create folder' onClick={() => {
-                                        onCollectionEvent('create-folder', lastSelectedFolderTree || '/');
-                                    }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
-                                </div>
-                                <div className={'pt-2 ' + (sidebarMin ? 'd-none' : '')}
-                                    style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', }}>
 
-                                    {contextMenu && <ContextMenu />}
 
-                                    {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
+                        <div>
+                            <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
+                                <span title='Create request' onClick={() => {
+                                    onCollectionEvent('create-request', lastSelectedFolderTree || '/');
+                                }} className='cursor mr-2'><i className='fa fa-file-medical'></i></span>
+                                <span title='Create folder' onClick={() => {
+                                    onCollectionEvent('create-folder', lastSelectedFolderTree || '/');
+                                }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
+                            </div>
+                            <div className={'pt-2 CollectionRendererContainer ' + (sidebarMin ? 'd-none' : '')}
+                                style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', }}>
 
-                                    <div
-                                    onContextMenu={(e)=>{
+                                {contextMenu && <ContextMenu />}
+
+                                {collections.map((collection, i) => <CollectionRenderer key={i} data={collection} />)}
+
+                                <div
+                                    onContextMenu={(e) => {
                                         setContextMenuF({
-                                            tree:'/',
+                                            tree: '/',
                                             x: e.pageX,
                                             y: e.pageY,
                                             type: 'blank'
 
                                         })
                                     }}
-                                    
+
                                     className='h-100'>
 
-                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                        
+
 
 
 
@@ -513,8 +588,8 @@ function Layout(props: any) {
                                 <i style={{ position: 'relative', top: '3px' }} className=' fa fa-sync spin mr-2'></i>
                             }
 
-                          
-                        <WorkspaceToggle />
+
+                            <WorkspaceToggle />
 
 
                             <span className='cursor text-center'>

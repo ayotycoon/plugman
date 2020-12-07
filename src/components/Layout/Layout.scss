@@ -3,11 +3,6 @@ $sidebarWidthMax: 300px;
 $topbarHeight: 60px;
 
 .Layout {
-   
-
-
-
-
     .toast {
         position: absolute;
         font-weight: bold;
@@ -35,7 +30,6 @@ $topbarHeight: 60px;
         transition-duration: 0.5s;
     }
     .sidebar-logo {
- 
     }
 
     .sidebar {
@@ -58,7 +52,7 @@ $topbarHeight: 60px;
 
         .sidebar-nav {
             text-align: center;
-          
+
             position: relative;
             .fa {
                 font-size: 20px;
@@ -79,8 +73,8 @@ $topbarHeight: 60px;
         padding-top: 15px;
         left: $sidebarWidth;
         width: calc(100vw - 60px);
-        padding-right:  50px;
-        padding-left:  25px;
+        padding-right: 50px;
+        padding-left: 25px;
         z-index: 5;
         display: inline-block;
         padding-top: 15px;
@@ -89,11 +83,9 @@ $topbarHeight: 60px;
         margin-left: $sidebarWidth;
         padding-left: 10px;
 
-      padding-top: 70px;
-   
+        padding-top: 70px;
 
         width: calc(100vw - 60px);
-
     }
 
     &.sidebar-max {
@@ -102,12 +94,12 @@ $topbarHeight: 60px;
             overflow: hidden !important;
         }
         .topbar {
-            left: $sidebarWidthMax ;
-            width: calc(100vw - 300px) ;
+            left: $sidebarWidthMax;
+            width: calc(100vw - 300px);
         }
         .content {
-            margin-left: $sidebarWidthMax ;
-            width: calc(100vw - 300px) ;
+            margin-left: $sidebarWidthMax;
+            width: calc(100vw - 300px);
         }
         .sidebar-text {
             opacity: 1;
@@ -151,7 +143,15 @@ $topbarHeight: 60px;
             animation-timing-function: ease-in-out;
         }
     }
+
+  
 }
+  .CollectionRendererContainer {
+        -webkit-user-select: none; /* Chrome all / Safari all */
+        -moz-user-select: none; /* Firefox all */
+        -ms-user-select: none;
+     
+    }
 
 @keyframes bar {
     0% {
@@ -183,14 +183,14 @@ $topbarHeight: 60px;
         border-radius: 25px !important;
     }
     .sidebar-max {
-        .sidebar{
-  position: fixed;
-  z-index:50;
+        .sidebar {
+            position: fixed;
+            z-index: 50;
         }
-      
+
         .topbar {
             left: $sidebarWidth !important;
-           // margin-left: $sidebarWidth !important;
+            // margin-left: $sidebarWidth !important;
             width: calc(100vw - 60px) !important;
         }
         .content {
