@@ -25,7 +25,7 @@ const defaultFolderStructure = {
     folders: [
     {
         id: getId(),
-        name: 'introduction to emit requests',
+        name: 'Sample emit request',
         isFolder: false,
         event: "message",
         type: "emit",
@@ -33,11 +33,11 @@ const defaultFolderStructure = {
     },
     {
         id: getId(),
-        name: 'introduction to listen requests',
+        name: 'Sample listen request',
         isFolder: false,
         event: "message",
         type: "listen",
-        listenBody: `{"foo": "bar}`
+        listenBody: `{"foo": "bar"}`
     },
     {
         id: getId(),
@@ -50,7 +50,7 @@ const defaultFolderStructure = {
                 isFolder: false,
                 event: "message_listener",
                 type: "listen",
-                listenBody: `{"foo": "bar}`
+                listenBody: `{"foo": "bar"}`
             },
         ],
     },
@@ -68,13 +68,24 @@ const defaultWorkspacesStructure = {
     'default-workspace':{name:'Default', key: 'default-workspace'}
 }
 let workspaces: any;
+
+/**
+ * Helps to remove un wanted code next time the application initializes
+ * @param data
+ */
+function sanitize(data: any){
+
+
+    return data
+
+}
 export class WorkspaceService {
     public static persist() {
         localStorage.setItem(activeWorkSpaceKey, JSON.stringify(activeWorkspaceData))
 
     }
     public static load() {
-        activeWorkspaceData = JSON.parse(localStorage.getItem(activeWorkSpaceKey) || JSON.stringify(defaultFolderStructure))
+        activeWorkspaceData = sanitize(JSON.parse(localStorage.getItem(activeWorkSpaceKey) || JSON.stringify(defaultFolderStructure)))
 
     }
     // ww
