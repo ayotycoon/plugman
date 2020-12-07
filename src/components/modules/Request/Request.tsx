@@ -10,8 +10,9 @@ import socketService from '../../../Providers/socket.service';
 import Activity from '../Activity/Activity';
 import Editor, { ControlledEditor } from '@monaco-editor/react';
 import * as envJson from '../../../env.json'
+import Blank from '../../misc/Blank/Blank';
 
-
+const bodyTypes = ["json", "object", "string"]
 function Request(props: any) {
     const [saved, setSaved] = useState(true);
     const [requestTree, setRequestTree] = useState('');
@@ -23,10 +24,10 @@ function Request(props: any) {
     const subs = useRef([] as any[])
     const navbarCriticalChanged = useRef(false);
 
-    const cells = activeRequest && activeRequest.type == 'emit' ? ['EmitBody', 'Script'] : ['ListenBody', 'Script']
+    const cells = activeRequest && activeRequest.type == 'emit' ? ['EmitBody', 'Options'] : ['ListenBody', 'Options']
 
 
-   
+
     useEffect(() => {
 
 
@@ -68,7 +69,7 @@ function Request(props: any) {
                     }
                     setActiveRequest(data.request)
                     setRequestTree(data.tree)
-                    
+
 
                     break;
                 case 'del-request':
@@ -80,7 +81,7 @@ function Request(props: any) {
                 case 'rename-request':
 
                     if (data.tree == requestTree) {
-                        setActiveRequest({...activeRequest,name})
+                        setActiveRequest({ ...activeRequest, name: data.name })
                     }
                     break;
             }
@@ -91,13 +92,13 @@ function Request(props: any) {
 
         ))
         props.setTitle(activeRequest ? activeRequest.name : '')
-if(envJson.prod && !saved){
-    window.onbeforeunload = function (event: any) {
-        return confirm("Confirm refresh");
-    };
+        if (envJson.prod && !saved) {
+            window.onbeforeunload = function (event: any) {
+                return confirm("Confirm refresh");
+            };
 
-}
-     
+        }
+
 
         return () => {
             subs.current.forEach((sub: any) => sub.unSubscribe())
@@ -171,7 +172,7 @@ if(envJson.prod && !saved){
         // update the location request tree
         props.history.push(window.location.pathname + '?requestTree=' + tree)
         props.setActiveTree(tree)
-      
+
         const ids = tree.split('/')
         const id = ids[ids.length - 1]
 
@@ -194,12 +195,24 @@ if(envJson.prod && !saved){
             return
         }
         if (type == 'emit') {
+            let body = activeRequest.emitBody;
 
 
-        
+            try {
+                if (activeRequest.bodyType == 'object') {
+                    body = JSON.parse(activeRequest.emitBody)
+                }
+
+            } catch (e) {
+                toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Cound not convert body to '${activeRequest.bodyType}'.. sending body as string instead` })
 
 
-            socketService.emit(activeRequest.id as any, activeRequest.event, activeRequest.emitBody)
+            }
+
+
+
+
+            socketService.emit(activeRequest.id as any, activeRequest.event, body)
         } else if (type == 'listen') {
             socketService.listen(activeRequest.id as any, activeRequest.event)
 
@@ -276,6 +289,7 @@ if(envJson.prod && !saved){
                                         </div>
 
                                         <input type="text" disabled={activeRequest.type == 'listen' && alreadyListening} value={activeRequest.event} name="event" onChange={handleChange} className="form-control" placeholder={activeRequest.type == 'emit' ? "Add emit event" : "Add listen event"} />
+
                                     </div>
 
 
@@ -308,6 +322,8 @@ if(envJson.prod && !saved){
 
 
 
+
+
                                     <ControlledEditor theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
                                         minimap: {
                                             enabled: false
@@ -337,6 +353,34 @@ if(envJson.prod && !saved){
 
                                 <div>
 
+                                    <table className="table text-color-default">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Option</th>
+                                                <th scope="col">Value</th>
+                                                <th scope="col">description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+
+                                                <td> Body Type</td>
+                                                <td><select name="bodyType" onChange={handleChange} value={activeRequest.bodyType} className=''> {bodyTypes.map(bodyType => <option value={bodyType}>{bodyType}</option>)} </select>
+                                                </td>
+                                                <td className='small'>Determines what the body should be sent as for emit requests and also what type of body the listen requests are receiving</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+
+
+                                </div>}
+                            {
+                                /*
+                            activeCellIndex == 2 &&
+
+                                <div>
+
                                     <ControlledEditor onChange={(ev: any, value: any) => handleEditorChange(ev, value, 'script')} theme={props.app.darkMode ? 'vs-dark' : 'plugman-light'} options={{
                                         minimap: {
                                             enabled: false
@@ -347,36 +391,16 @@ if(envJson.prod && !saved){
                                     }} height="calc(100vh - 300px)" value={activeRequest.script || ''} language="javascript" />
 
 
-                                </div>}
-
-
-
-                        </> : <div style={{
-                            height: 'calc(100vh - 200px)',
-                            display: 'flex',
-                            alignItems: 'center',
-
-                            //    justifyContent: 'center'
-                        }}>
-
-                                <div className='h4 change-in-dark-1 p-4'>
-
-                                    Open a Request
-                                <br />
-                                    <br />
-                                    <b>How to use</b>
-                                    <ol>
-                                        <li>Connect  to socket url</li>
-                                        <li>Make an emit request </li>
-                                        <li>create a listen request</li>
-                                        <li>Receive the request from your server and emit back the listen event</li>
-
-                                        <li> Emit the <code>emit</code> request </li>
-                                        <li>Listen to the <code>listen</code> request</li>
-                                    </ol>
-
                                 </div>
-                            </div>
+                                */
+
+                            }
+
+
+
+                        </> : 
+                        
+                       <Blank />
                         }
 
                     </div>
