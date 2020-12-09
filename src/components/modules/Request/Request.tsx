@@ -397,7 +397,7 @@ function Request(props: any) {
                                             <tr>
 
                                                 <td> Body Type</td>
-                                                <td><select name="bodyType" className='capitalize' onChange={handleChange} value={activeRequest.bodyType}> {bodyTypes.map(bodyType => <option value={bodyType}>{bodyType}</option>)} </select>
+                                                <td><select name="bodyType" className='capitalize' onChange={handleChange} value={activeRequest.bodyType}> {bodyTypes.map((bodyType,i) => <option value={bodyType} key={i}>{bodyType}</option>)} </select>
                                                 </td>
                                                 <td className='small'>Determines what the body should be sent as for emit requests and also what type of body the listen requests are receiving</td>
                                             </tr>
