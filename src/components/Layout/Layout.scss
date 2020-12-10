@@ -3,6 +3,10 @@ $sidebarWidthMax: 300px;
 $topbarHeight: 60px;
 
 .Layout {
+    .is-folder-collection{
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+    }
     .toast {
         position: absolute;
         font-weight: bold;
@@ -151,6 +155,9 @@ $topbarHeight: 60px;
         -moz-user-select: none; /* Firefox all */
         -ms-user-select: none;
      
+    }
+    .border-left-dotted{
+        border-left-style:dotted !important;
     }
 
 @keyframes bar {

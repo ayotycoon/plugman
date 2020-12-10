@@ -158,7 +158,7 @@ function Layout(props: any) {
 
     }
 
-    async function onCollectionEvent(type: string, tree: string, treeName?: string, other?: string) {
+    async function onCollectionEvent(type: string, tree: string, treeName?: string, other?: any) {
 
 
         if (type == 'toggleFolder') {
@@ -229,7 +229,16 @@ function Layout(props: any) {
 
         }
         else if (type == 'create-request') {
-            const name = await prompter('Request Name')
+            if(tree == '/'){
+                toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> It is not recommended to create a request that is not under a collection` })
+
+            }
+
+            let name = await prompter('Request Name')
+         
+            if(!name){
+                return
+            }
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 if (data) {
                     data.children.push({
@@ -256,7 +265,7 @@ function Layout(props: any) {
             CollectionsService.persist()
         }
         else if (type == 'create-folder') {
-            const name = await prompter('Folder Name')
+            const name = await prompter((other ? 'Collection': 'Folder') + ' Name')
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 if (data) {
                     data.children.push({
@@ -335,7 +344,7 @@ function Layout(props: any) {
 
 
                     }
-                    
+
 
                     if (data) {
                         data.children.push(parsed)
@@ -401,6 +410,8 @@ function Layout(props: any) {
         const tree = (props.tree || '') + ('/' + collection.id);
         const treeName = (props.treeName || '') + ('/' + collection.name);
 
+        const isFirstTree = props.tree == undefined
+
 
 
         return (
@@ -419,9 +430,10 @@ function Layout(props: any) {
                                     other: collection.name
 
                                 })
-                            }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
+                            
+                            }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '') + (isFirstTree ? ' is-folder-collection border-top border-bottom ' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
 
-                            {collection.isFolderOpened && <div className='border-left ml-1'> <div style={{ paddingLeft: '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
+                            {collection.isFolderOpened && <div className={' ' + (isFirstTree ? '' : 'ml-2 border-left border-left-dotted')}> <div style={{ paddingLeft: isFirstTree ? '0px' : '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
 
                         </>
                         :
@@ -452,14 +464,15 @@ function Layout(props: any) {
     }
 
     function ContextMenu(props: any) {
-
+        const isFirstTree = (contextMenu.tree == undefined || contextMenu.tree == '/' )
+   
         return (
             <div className={'border rounded text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('copy', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-copy mr-2'></i> Copy</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('paste', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-paste mr-2'></i> Paste</div>}
 
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Folder</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, isFirstTree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create {isFirstTree ? 'Collection' :'Folder'}</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('rename', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('delete', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
@@ -516,8 +529,8 @@ function Layout(props: any) {
                                     onCollectionEvent('create-folder', lastSelectedFolderTree || '/');
                                 }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
                             </div>
-                            <div className={'pt-2 CollectionRendererContainer ' + (sidebarMin ? 'd-none' : '')}
-                                style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', marginLeft: '10px', whiteSpace: 'nowrap', width: '100%', }}>
+                            <div className={'CollectionRendererContainer ' + (sidebarMin ? 'd-none' : '')}
+                                style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', whiteSpace: 'nowrap', width: '100%', }}>
 
                                 {contextMenu && <ContextMenu />}
 

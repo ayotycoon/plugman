@@ -23,30 +23,32 @@ const defaultFolderStructure = {
     version: '1.1',
     serverUrl: '',
     folders: [
+ 
     {
         id: getId(),
-        name: 'Sample emit request',
-        isFolder: false,
-        event: "message",
-        type: "emit",
-        emitBody: `{"foo": "bar"}`
-    },
-    {
-        id: getId(),
-        name: 'Sample listen request',
-        isFolder: false,
-        event: "message",
-        type: "listen",
-        listenBody: `{"foo": "bar"}`
-    },
-    {
-        id: getId(),
-        name: 'Yep ! a folder 😉',
+        name: 'Example Collection 😉',
         isFolder: true,
+        isFolderOpened:true,
         children:[
             {
                 id: getId(),
-                name: 'i am a request in a folder',
+                name: 'Sample emit request',
+                isFolder: false,
+                event: "message",
+                type: "emit",
+                emitBody: `{"foo": "bar"}`
+            },
+            {
+                id: getId(),
+                name: 'Sample listen request',
+                isFolder: false,
+                event: "message",
+                type: "listen",
+                listenBody: `{"foo": "bar"}`
+            },
+            {
+                id: getId(),
+                name: 'i am a request in a collection',
                 isFolder: false,
                 event: "message_listener",
                 type: "listen",
@@ -56,7 +58,7 @@ const defaultFolderStructure = {
     },
     {
         id: getId(),
-        name: 'Right click on me to see folder options',
+        name: 'Right click on me to see  options',
         isFolder: true,
         children:[
         
