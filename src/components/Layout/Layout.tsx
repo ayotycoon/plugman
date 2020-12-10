@@ -4,15 +4,10 @@ import { Route, Redirect, Link, Switch } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { loading } from '../../store/actions/network.action'
 import { setUserData, toggleDarkMode, setActiveTree } from '../../store/actions/app.action'
-
 import { confirmer, sendToCollectionObs, getId, prompter } from '../../Providers/core.service';
-
 import * as envJson from '../../env.json'
 import { toaster } from '../../Providers/core.service'
-
 import DropdownClick from '../misc/DropdownClick/DropdownClick';
-
-
 import * as storage from '../../Providers/storage.service'
 import socketService from '../../Providers/socket.service';
 import Request from '../modules/Request/Request';
@@ -23,20 +18,13 @@ import TypePill from '../misc/TypePill/TypePill';
 import WorkspaceToggle from '../misc/WorkspaceToggle/WorkspaceToggle';
 import { copy } from '../../Providers/helpers';
 
-
-
 const isPc = window.innerWidth > 800;
-
-
-
 function Layout(props: any) {
 
 
 
 
     const [sidebarMin, setSidebarMin] = useState(!isPc) //isPc
-    const [activeNavIndex, setActiveNavIndex] = useState(0)
-
     const [socketUrl, setSocketUrl] = useState(WorkspaceService.getServerUrl() || '')
     const [lastSelectedFolderTree, setLastSelectedFolderTree] = useState('/')
     const [collections, setCollections] = useState([] as any[])
