@@ -265,7 +265,7 @@ function Layout(props: any) {
             CollectionsService.persist()
         }
         else if (type == 'create-folder') {
-            const name = await prompter((other ? 'Collection': 'Folder') + ' Name')
+            const name = await prompter((tree=='/' ? 'Collection': 'Folder') + ' Name')
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 if (data) {
                     data.children.push({
@@ -472,7 +472,7 @@ function Layout(props: any) {
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('paste', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-paste mr-2'></i> Paste</div>}
 
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, isFirstTree)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create {isFirstTree ? 'Collection' :'Folder'}</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create {isFirstTree ? 'Collection' :'Folder'}</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('rename', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('delete', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
