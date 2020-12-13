@@ -1,4 +1,10 @@
-# PLUGMAN 🚀🚀🚀🚀
+# PLUGMAN 🚀🚀🚀🚀 
+
+
+
+
+
+[![Made in Nigeria](https://img.shields.io/badge/made%20in-nigeria-008751.svg?style=flat-square)](https://github.com/acekyd/made-in-nigeria)
 
 To Open the web app go to 
 [plugman.netlify.app](https://plugman.netlify.app).

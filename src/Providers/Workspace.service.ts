@@ -1,6 +1,11 @@
 import { getId } from './index';
 import { BehaviourSubject } from './helpers';
 
+export const TYPE_KEYS = {
+    SOCKETIO: 'socket-io',
+    WEBSOCKETS: 'web-sockets'
+}
+
 let activeWorkSpaceKey = 'default-workspace'
 let activeWorkspaceData: {
     name: string;

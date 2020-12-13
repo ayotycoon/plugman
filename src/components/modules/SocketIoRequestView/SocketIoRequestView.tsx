@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import './Request.scss';
+import './SocketIoRequestView.scss';
 import { connect } from 'react-redux'
 import { setTitle, setActiveTree } from '../../../store/actions/app.action'
 import DropdownClick from '../../misc/DropdownClick/DropdownClick';
@@ -13,7 +13,7 @@ import * as envJson from '../../../env.json'
 import Blank from '../../misc/Blank/Blank';
 
 const bodyTypes = ["string","json", "object","number"]
-function Request(props: any) {
+function SocketIoRequestView(props: any) {
     const [saved, setSaved] = useState(true);
     const [requestTree, setRequestTree] = useState('');
     const [activeCellIndex, setActiveCellIndex] = useState(0);
@@ -274,7 +274,7 @@ function Request(props: any) {
 
     return (
 
-        <div className='Request h-100'>
+        <div className='SocketIoRequestView h-100'>
 
             <div className='row h-100'>
                 <div className={'h-100 p-0 ' + (props.app.darkMode ? ' bg-dark ' : '') + (showActivity ? 'border-right  col-md-9' : 'col-md-12')}>
@@ -466,4 +466,4 @@ const mapStateToProps = (state: any) => ({
 })
 
 
-export default connect(mapStateToProps, { setTitle, setActiveTree })(Request)
+export default connect(mapStateToProps, { setTitle, setActiveTree })(SocketIoRequestView)

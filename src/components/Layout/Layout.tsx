@@ -10,7 +10,7 @@ import { toaster } from '../../Providers/core.service'
 import DropdownClick from '../misc/DropdownClick/DropdownClick';
 import * as storage from '../../Providers/storage.service'
 import socketService from '../../Providers/socket.service';
-import Request from '../modules/Request/Request';
+import SocketIoRequestView from '../modules/SocketIoRequestView/SocketIoRequestView';
 import { CollectionFolder, CollectionRequest } from '../types';
 import CollectionsService, { foldersObs, WorkspaceService } from '../../Providers/Workspace.service';
 import { setTimeout } from 'timers';
@@ -633,11 +633,13 @@ function Layout(props: any) {
                         <Switch>
 
                             <Route exact path="/">
-                                <Redirect to='/request' />
+                                <Redirect to='/socket-io' />
+                            </Route>
+                            <Route exact path="/request">
+                                <Redirect to='/socket-io' />
                             </Route>
 
-
-                            <Route exact path="/request" component={Request} />
+                           <Route exact path="/socket-io" component={SocketIoRequestView} />
 
                             <Redirect path='**' to='/404' />
                         </Switch>
