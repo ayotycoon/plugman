@@ -1,138 +1,23 @@
 
 import { getId } from './index';
 
-const apiCacheHash: any = {
 
-}
-interface ApiCache<TR> {
-    then: (fn: (arg: TR) => any) => ApiCache<any>;
-    catch: (fn: any) => ApiCache<any>;
-    finally: (fn: any) => ApiCache<any>;
+export const bodyTypeParser = (bodyType: any, body: any) =>{
 
+    if (bodyType == 'object') {
+        return JSON.parse(body)
+    } else if (bodyType == 'number') {
+        return parseInt(body)
 
-}
-interface ApiCacheConstructor {
-    new <TR>(url: string, p: Promise<any>): ApiCache<TR>;
-}
-
-// @ts-ignore
-export const ApiCache: ApiCacheConstructor = class _apiCache {
-    private thenCb: CallableFunction | undefined;
-    private catchCb: CallableFunction | undefined;
-    private finallyCb: CallableFunction | undefined;
-
-    constructor(url: string, p: any) {
-
-        setTimeout(() => {
-            if (apiCacheHash[url] && this.thenCb) {
-
-                this.thenCb(apiCacheHash[url])
-            }
-        }, 1);
-
-        console.log(apiCacheHash)
-
-
-
-        p.then((_: any) => {
-            apiCacheHash[url] = _;
-            this.thenCb && this.thenCb(_)
-        })
-        p.catch((_: any) => this.catchCb && this.catchCb(_))
-        p.finally(() => this.finallyCb && this.finallyCb())
-
-    }
-
-
-    then = (cb: CallableFunction) => {
-        this.thenCb = cb
-
-        return this.chainer()
-
-    }
-    catch = (cb: CallableFunction) => {
-        this.catchCb = cb
-        return this.chainer()
-    }
-    finally = (cb: CallableFunction) => {
-        this.finallyCb = cb
-        return this.chainer()
-    }
-    private chainer = () => {
-        return {
-            catch: this.catch,
-            then: this.then,
-            finally: this.finally,
+    } else if (bodyType == 'json') {
+        if (!JSON.parse(body)) {
+            throw "invalid json"
         }
     }
-}
 
-export class Throttle {
+    return body;
 
-    time = 100
-    wait = false;
-    skip = 0
-    times = 0
-    constructor(time: number, skip?: number) {
-
-        this.time = time
-        this.skip = skip || 0
-
-    }
-    start(cb: CallableFunction) {
-
-
-        if (!this.wait) {
-            this.times++
-            if (this.skip && this.times === this.skip) {
-
-            } else {
-                cb()
-                this.wait = true;
-            }
-
-            setTimeout(() => {
-                this.wait = false;
-            }, this.time);
-        }
-
-
-    }
-    resetSkip() {
-        this.times = 0
-    }
-
-
-}
-
-
-export class DebounceTime {
-
-    time = 400
-    ref: any;
-    active = false;
-    public start = (fn: Function, time?: number) => {
-        if (this.ref) {
-            clearTimeout(this.ref)
-        }
-
-        this.active = true;
-        if (time) {
-            this.time = time
-        }
-        const deffFun = () => {
-            fn()
-            this.active = false
-        }
-
-        this.ref = setTimeout(deffFun, this.time);
-    }
-    public destroy() {
-        clearTimeout(this.ref)
-    }
-
-
-}
+} 
 
 
 export class BehaviourSubject {

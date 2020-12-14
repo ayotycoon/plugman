@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import './Activity.scss';
+import './SocketIOActivity.scss';
 import { connect } from 'react-redux'
 import { setTitle } from '../../../store/actions/app.action'
 import Editor from '@monaco-editor/react';
@@ -11,7 +11,7 @@ const DEFAULTS = {
     'listen-disconnect': true,
 }
 
-function Activity(props: any) {
+function SocketIOActivity(props: any) {
     const [events, setEvents] = useState({} as any)
     const eventsDisplayRef = useRef(null as unknown as HTMLDivElement);
     function setEventRefF(hash: any) {
@@ -64,7 +64,7 @@ function keyGen(type: any,event: any){
       
         
         const hash: any = {...DEFAULTS} ;
-        (Object.values(props.socket.tracker) as any[]).forEach(e => {
+        (Object.values(props.socketIO.tracker) as any[]).forEach(e => {
             const key = keyGen(e.type, e.event);
             hash[key] = true;
 
@@ -72,7 +72,7 @@ function keyGen(type: any,event: any){
 
         setEventRefF(hash)
 
-    }, [props.socket.activities, props.socket.tracker])
+    }, [props.socketIO.activities, props.socketIO.tracker])
 
  
     const totalEvents = Object.values(events);
@@ -80,7 +80,7 @@ function keyGen(type: any,event: any){
 
     return (
 
-        <div className='Activity'>
+        <div className='SocketIOActivity'>
             <div className='change-in-dark-1 mb-2' style={{ marginTop: '5px' }}> Activity</div>
        
             <DropdownClick onClick={(opened:boolean) => {
@@ -114,7 +114,7 @@ function keyGen(type: any,event: any){
 
 
             <div ref={eventsDisplayRef} style={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
-                {(props.socket.activities as any[]).map((activity, i) => {
+                {(props.socketIO.activities as any[]).map((activity, i) => {
                     const isActivityEmit = activity.type == 'emit';
                     const showEvent = events[keyGen(activity.type, activity.event)] != false
                     return (
@@ -167,8 +167,8 @@ function keyGen(type: any,event: any){
 const mapStateToProps = (state: any) => ({
 
     app: state.app,
-    socket: state.socket
+    socketIO: state.socketIO
 })
 
 
-export default connect(mapStateToProps, { setTitle })(Activity)
+export default connect(mapStateToProps, { setTitle })(SocketIOActivity)

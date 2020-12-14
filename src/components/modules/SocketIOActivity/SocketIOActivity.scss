@@ -1,0 +1,13 @@
+.SocketIOActivity{
+   .margin, .margin-view-overlays {
+display:none !important;
+}
+.overflow-guard{
+    padding-left: 0;
+    margin-left: 0;
+}
+.monaco-scrollable-element.editor-scrollable{
+    left: 0 !important;
+    width: 100% !important;
+}
+}

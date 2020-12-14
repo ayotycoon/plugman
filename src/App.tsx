@@ -10,8 +10,7 @@ import { monaco } from '@monaco-editor/react';
 
 import Layout from './components/Layout/Layout';
 import Overlay from './components/misc/Overlay/Overlay';
-import { possibleResizeObs } from './Providers/core.service';
-import {  DebounceTime } from './Providers/helpers';
+
 
 const log = console.log;
 console.log = (...args : any) => {
@@ -43,12 +42,7 @@ monaco
 
     
 })
-const ref = new DebounceTime()
 
-window.addEventListener('resize', () => {
-    ref.start(() => possibleResizeObs.next(true), 500)
-})
-//socketService.initialize()
 function App() {
     useEffect(() => {
  

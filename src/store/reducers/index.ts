@@ -2,11 +2,13 @@ import {combineReducers} from 'redux';
 
 import networkReducer from './network.reducer';
 import appReducer from './app.reducer';
-import socketReducer from './socket.reducer';
+import socketIOReducer from './socket.reducer';
+import webSocketReducer from './web-socket.reducer';
 
 export default combineReducers({
     network: networkReducer,
     app: appReducer,
-    socket: socketReducer,
+    socketIO: socketIOReducer,
+    webSocket: webSocketReducer
 
 })

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import './SocketIoRequestView.scss';
+import './SocketIORequestView.scss';
 import { connect } from 'react-redux'
 import { setTitle, setActiveTree } from '../../../store/actions/app.action'
 import DropdownClick from '../../misc/DropdownClick/DropdownClick';
@@ -7,13 +7,14 @@ import { sendToCollectionObs, toaster } from '../../../Providers/core.service';
 import { CollectionRequest } from '../../types';
 import CollectionsService from '../../../Providers/Workspace.service';
 import socketService from '../../../Providers/socket.service';
-import Activity from '../Activity/Activity';
+import Activity from '../SocketIOActivity/SocketIOActivity';
 import Editor, { ControlledEditor } from '@monaco-editor/react';
 import * as envJson from '../../../env.json'
 import Blank from '../../misc/Blank/Blank';
+import { bodyTypeParser } from '../../../Providers/helpers';
 
 const bodyTypes = ["string","json", "object","number"]
-function SocketIoRequestView(props: any) {
+function SocketIORequestView(props: any) {
     const [saved, setSaved] = useState(true);
     const [requestTree, setRequestTree] = useState('');
     const [activeCellIndex, setActiveCellIndex] = useState(0);
@@ -214,7 +215,7 @@ function SocketIoRequestView(props: any) {
 
 
     async function action(type: string) {
-        if (!props.socket.status.connected) {
+        if (!props.socketIOIO.status.connected) {
             toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i>  You are not connected` })
 
             return
@@ -224,16 +225,8 @@ function SocketIoRequestView(props: any) {
 
 
             try {
-                if (activeRequest.bodyType == 'object') {
-                    body = JSON.parse(activeRequest.emitBody)
-                } else if (activeRequest.bodyType == 'number') {
-                    body = parseInt(activeRequest.emitBody)
-                
-                } else if (activeRequest.bodyType == 'json') {
-                    if(!JSON.parse(activeRequest.emitBody)){
-                        throw "invalid json"
-                    }
-                }
+                body = bodyTypeParser(activeRequest.bodyType, activeRequest.emitBody)
+             
 
             } catch (e) {
                 toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Could not convert body to '${activeRequest.bodyType}', Sending body as string instead` })
@@ -253,7 +246,7 @@ function SocketIoRequestView(props: any) {
         }
     }
 
-    const alreadyListening = (activeRequest && props.socket.tracker[activeRequest.id] && props.socket.tracker[activeRequest.id].type == 'listen')
+    const alreadyListening = (activeRequest && props.socketIO.tracker[activeRequest.id] && props.socketIO.tracker[activeRequest.id].type == 'listen')
 
     const handleEditorChange = (ev: any, value: any, type: any) => {
         setSaved(false)
@@ -274,7 +267,7 @@ function SocketIoRequestView(props: any) {
 
     return (
 
-        <div className='SocketIoRequestView h-100'>
+        <div className='SocketIORequestView h-100'>
 
             <div className='row h-100'>
                 <div className={'h-100 p-0 ' + (props.app.darkMode ? ' bg-dark ' : '') + (showActivity ? 'border-right  col-md-9' : 'col-md-12')}>
@@ -462,8 +455,8 @@ const mapStateToProps = (state: any) => ({
 
     app: state.app,
     notifications: state.notifications,
-    socket: state.socket
+    socketIO: state.socketIOIO
 })
 
 
-export default connect(mapStateToProps, { setTitle, setActiveTree })(SocketIoRequestView)
+export default connect(mapStateToProps, { setTitle, setActiveTree })(SocketIORequestView)

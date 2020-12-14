@@ -10,13 +10,16 @@ import { toaster } from '../../Providers/core.service'
 import DropdownClick from '../misc/DropdownClick/DropdownClick';
 import * as storage from '../../Providers/storage.service'
 import socketService from '../../Providers/socket.service';
-import SocketIoRequestView from '../modules/SocketIoRequestView/SocketIoRequestView';
+
 import { CollectionFolder, CollectionRequest } from '../types';
 import CollectionsService, { foldersObs, WorkspaceService } from '../../Providers/Workspace.service';
 import { setTimeout } from 'timers';
 import TypePill from '../misc/TypePill/TypePill';
 import WorkspaceToggle from '../misc/WorkspaceToggle/WorkspaceToggle';
 import { copy } from '../../Providers/helpers';
+import WebSocketRequestView from '../modules/WebSocketRequestView/WebSocketRequestView';
+import SocketIORequestView from '../modules/SocketIORequestView/SocketIORequestView';
+import webSocketService from '../../Providers/web-socket.service';
 
 const isPc = window.innerWidth > 800;
 function Layout(props: any) {
@@ -25,6 +28,7 @@ function Layout(props: any) {
 
 
     const [sidebarMin, setSidebarMin] = useState(!isPc) //isPc
+    const [isSocketIOConnection, setIsSocketIOConnection] = useState(WorkspaceService.getIsSocketIOConnection() ) //isPc
     const [socketUrl, setSocketUrl] = useState(WorkspaceService.getServerUrl() || '')
     const [lastSelectedFolderTree, setLastSelectedFolderTree] = useState('/')
     const [collections, setCollections] = useState([] as any[])
@@ -36,6 +40,7 @@ function Layout(props: any) {
 
     const darkMode = props.app.darkMode;
     const activeTree = props.app.activeTree;
+    const isSocketConnected = isSocketIOConnection ? props.socketIO.status.connected : props.webSocket.status.connected
 
     function toggleDarkMode() {
         props.toggleDarkMode()
@@ -68,9 +73,17 @@ function Layout(props: any) {
 
         window.addEventListener('contextmenu', (e: any) => e.preventDefault());
         if (socketUrl) {
+            if(isSocketIOConnection){
+                socketService.connect(socketUrl)
+            } else {
+                webSocketService.connect(socketUrl)
+
+            }
 
 
-            socketService.connect(socketUrl)
+      
+
+          
         }
 
         return () => {
@@ -217,14 +230,14 @@ function Layout(props: any) {
 
         }
         else if (type == 'create-request') {
-            if(tree == '/'){
+            if (tree == '/') {
                 toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> It is not recommended to create a request that is not under a collection` })
 
             }
 
             let name = await prompter('Request Name')
-         
-            if(!name){
+
+            if (!name) {
                 return
             }
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
@@ -253,7 +266,7 @@ function Layout(props: any) {
             CollectionsService.persist()
         }
         else if (type == 'create-folder') {
-            const name = await prompter((tree=='/' ? 'Collection': 'Folder') + ' Name')
+            const name = await prompter((tree == '/' ? 'Collection' : 'Folder') + ' Name')
             CollectionsService.treeDataModifier({ emit: true }, tree, (data: any, collectionTree: any[]) => {
                 if (data) {
                     data.children.push({
@@ -358,6 +371,21 @@ function Layout(props: any) {
 
 
     }
+  
+    const  toggleIsSocketIOConnection = ()=> {
+        const val = isSocketIOConnection
+        if (isSocketConnected){
+
+            toaster({ type: 'info', message: `<i class='fa fa-info mr-2 '> </i> Disconnect before changing to ` + (val ? 'Websockets' : 'Socket-io') })
+
+
+            return
+        }
+   
+        setIsSocketIOConnection(!val);
+        WorkspaceService.setIsSocketIOConnection(!val);
+        setSocketUrl(WorkspaceService.getServerUrl() || '')
+    }
 
     function lastFolderCB(tree?: any) {
         if (tree) {
@@ -418,7 +446,7 @@ function Layout(props: any) {
                                     other: collection.name
 
                                 })
-                            
+
                             }} className={'p-1 hover-collection ' + (tree == lastSelectedFolderTree ? 'bg-dark-light' : '') + (isFirstTree ? ' is-folder-collection border-top border-bottom ' : '')} onClick={() => { lastFolderCB(tree); onCollectionEvent('toggleFolder', tree, treeName) }}><i style={{ width: '15px' }} className={'fa mr-1 ' + (collection.isFolderOpened ? 'fa-angle-down' : 'fa-angle-right')}></i>{collection.name}</div>
 
                             {collection.isFolderOpened && <div className={' ' + (isFirstTree ? '' : 'ml-2 border-left border-left-dotted')}> <div style={{ paddingLeft: isFirstTree ? '0px' : '10px' }}>{collection.children.map((c, i) => <div><CollectionRenderer key={i + tree} tree={tree} treeName={treeName} data={c} /></div>)}</div> </div>}
@@ -452,15 +480,15 @@ function Layout(props: any) {
     }
 
     function ContextMenu(props: any) {
-        const isFirstTree = (contextMenu.tree == undefined || contextMenu.tree == '/' )
-   
+        const isFirstTree = (contextMenu.tree == undefined || contextMenu.tree == '/')
+
         return (
             <div className={'border rounded text-color-default ' + (darkMode ? 'bg-app-dark' : 'bg-white')} style={{ position: 'fixed', zIndex: 'auto', top: (contextMenu.y + 'px'), left: (contextMenu.x + 'px') }}>
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('copy', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-copy mr-2'></i> Copy</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('paste', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className=' fa fa-paste mr-2'></i> Paste</div>}
 
                 {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-request', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa fa-file-medical mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create Request</div>}
-                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create {isFirstTree ? 'Collection' :'Folder'}</div>}
+                {(contextMenu.type == 'folder' || contextMenu.type == 'blank') && <div onClick={() => onCollectionEvent('create-folder', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-folder-plus mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Create {isFirstTree ? 'Collection' : 'Folder'}</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('rename', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className={' fa fa-pen mr-2 ' + (darkMode ? 'text-white' : 'text-dark')}></i> Rename</div>}
                 {(contextMenu.type == 'folder' || contextMenu.type == 'request') && <div onClick={() => onCollectionEvent('delete', contextMenu.tree, contextMenu.treeName, contextMenu.other)} className='pr-2 pl-2 pt-1 pb-1 cursor hover-collection '> <i className='text-danger fa fa-trash mr-2'></i> Delete</div>}
 
@@ -492,9 +520,16 @@ function Layout(props: any) {
                                         {!sidebarMin && <b className='text-dark pt-2' style={{ fontSize: '25px' }}>PlugMan 🚀 </b>}
                                     </span>
                                     {!sidebarMin && <a className='ml-2 text-color-default' target="_blank" href='https://github.com/ayotycoon/plugman'><i className='fab fa-github'></i></a>}
-                                    {!sidebarMin && <small className='d-block text-right text-color-default' >
-                                        v {envJson.version}
-                                    </small>}
+                                    {!sidebarMin && <span className='d-block text-left' >
+                                        <small className='text-color-default' >
+                                            S{isSocketIOConnection && <span>ocket-io</span>} <span title={'Change to ' + (!isSocketIOConnection ? 'Socket io' : 'Websockets')} onClick={toggleIsSocketIOConnection} style={{ fontSize: '14px', transform: isSocketIOConnection ? 'rotate(180deg)' : '' }} className='cursor d-inline-block fa fa-toggle-on'></span>  W{!isSocketIOConnection && <span>eb-socket</span>}
+                                    </small>
+
+                                        <small className='float-right text-color-default' >
+                                            v {envJson.version}
+                                        </small>
+
+                                    </span>}
 
                                 </span>
 
@@ -507,8 +542,9 @@ function Layout(props: any) {
 
 
 
-
+                      {isSocketIOConnection ?
                         <div>
+                            
                             <div className='pr-2 pl-2 pb-1 pt-1  border-bottom text-color-default '>
                                 <span title='Create request' onClick={() => {
                                     onCollectionEvent('create-request', lastSelectedFolderTree || '/');
@@ -517,7 +553,7 @@ function Layout(props: any) {
                                     onCollectionEvent('create-folder', lastSelectedFolderTree || '/');
                                 }} className='cursor mr-2'><i className='fa fa-folder-plus'></i></span>
                             </div>
-                            <div className={'CollectionRendererContainer ' + (sidebarMin ? 'd-none' : '')}
+                             <div className={'CollectionRendererContainer ' + (sidebarMin ? 'd-none' : '')}
                                 style={{ height: 'calc(100vh - 350px)', overflowY: 'auto', overflowX: 'auto', whiteSpace: 'nowrap', width: '100%', }}>
 
                                 {contextMenu && <ContextMenu />}
@@ -540,7 +576,16 @@ function Layout(props: any) {
                                 </div>
                             </div>
                         </div>
-
+                            : <div className='p-2'>
+                             <div className='small text-color-default text-center '>
+    
+                                    Pure Websocket only listens and emits to the "message" event, therefore this is the only event that can be sent and listened to.
+    <hr  />
+    Only one emit request is provided, listen responses can be seen on the activity bar
+    
+    </div>
+    </div>
+    }
 
 
 
@@ -552,13 +597,24 @@ function Layout(props: any) {
                         <div className={'p-2 ' + (sidebarMin ? 'd-none' : '')} style={{ position: 'absolute', bottom: '30px' }}>
                             <input onChange={(e: any) => {
                                 setSocketUrl(e.target.value)
-                            }} disabled={props.socket.status.connected} className='form-control small' value={socketUrl} placeholder='Enter socket url' />
+                            }} disabled={isSocketConnected} className='form-control small' value={socketUrl} placeholder='Enter socket url' />
 
-                            <div className='mt-1'>{!props.socket.status.connected ? <> <button onClick={() => {
+                            <div className='mt-1'>{!isSocketConnected ? <> <button onClick={() => {
                                 WorkspaceService.setServerUrl(socketUrl);
-                                socketService.connect(socketUrl)
+                                if(isSocketIOConnection){
+
+                                    socketService.connect(socketUrl)
+                                }else{
+                                    webSocketService.connect(socketUrl)
+                                }
+                           
                             }} disabled={!socketUrl} className='btn btn-sm btn-primary'>Connect</button> </> : <button onClick={() => {
-                                socketService.disconnect()
+                                    if (isSocketIOConnection) {
+                                        socketService.disconnect()
+                                    }else{
+                                        webSocketService.disconnect(true)
+                                    }
+                                
                             }} className='btn btn-sm btn-outline-primary'>Disconnect</button>}
                             </div>
                         </div>
@@ -633,13 +689,11 @@ function Layout(props: any) {
                         <Switch>
 
                             <Route exact path="/">
-                                <Redirect to='/socket-io' />
+                                <Redirect to='/request' />
                             </Route>
-                            <Route exact path="/request">
-                                <Redirect to='/socket-io' />
-                            </Route>
+                          
 
-                           <Route exact path="/socket-io" component={SocketIoRequestView} />
+                            <Route exact path="/request" component={isSocketIOConnection ? SocketIORequestView : WebSocketRequestView} />
 
                             <Redirect path='**' to='/404' />
                         </Switch>
@@ -672,7 +726,8 @@ const mapStateToProps = (state: any) => ({
     network: state.network,
     app: state.app,
     notifications: state.notifications,
-    socket: state.socket
+    socketIO: state.socketIO,
+    webSocket: state.webSocket
 })
 
 export default connect(mapStateToProps, { loading, setUserData, toggleDarkMode, setActiveTree })(Layout)

@@ -9,19 +9,32 @@ export const TYPE_KEYS = {
 let activeWorkSpaceKey = 'default-workspace'
 let activeWorkspaceData: {
     name: string;
-    serverUrl: string;
+    socketIOUrl: string;
+    webSocketUrl: string;
     version: string;
+    isSocketIOConnection: boolean
     folders: any[]
+    webSocketRequest: any
 
 } = {
     name: '',
-    serverUrl: '',
+    socketIOUrl: '',
+    webSocketUrl: '',
     version: '',
-    folders: []
+    isSocketIOConnection: false,
+    folders: [],
+    webSocketRequest:{
+
+    }
 
 }
 const idToRequestHash: any = {
 
+}
+const defaultWebSocketRequest = {
+
+    bodyType: "object",
+    emitBody: `{"foo": "bar"}`
 }
 const defaultFolderStructure = {
     name: 'default',
@@ -31,7 +44,7 @@ const defaultFolderStructure = {
  
     {
         id: getId(),
-        name: 'Example Collection 😉',
+        name: 'Example SocketIO Collection 😉',
         isFolder: true,
         isFolderOpened:true,
         children:[
@@ -69,7 +82,12 @@ const defaultFolderStructure = {
         
         ],
     }
-]}
+],
+    webSocketRequest: defaultWebSocketRequest
+ 
+
+
+}
 
 const defaultWorkspacesStructure = {
     'default-workspace':{name:'Default', key: 'default-workspace'}
@@ -86,7 +104,11 @@ function sanitize(data: any){
     return data
 
 }
+    export const  isSocketIOConnection = () => {
+    return activeWorkspaceData.isSocketIOConnection || false
+}
 export class WorkspaceService {
+
     public static persist() {
         localStorage.setItem(activeWorkSpaceKey, JSON.stringify(activeWorkspaceData))
 
@@ -129,14 +151,47 @@ export class WorkspaceService {
         return  activeWorkSpaceKey
 
     }
-    public static getServerUrl(){
+    public static getIsSocketIOConnection(){
 
-        return activeWorkspaceData.serverUrl;
+        return isSocketIOConnection();
+
+    }
+    public static setIsSocketIOConnection(value: boolean) {
+
+        activeWorkspaceData.isSocketIOConnection = value;
+        this.persist()
+
+    }
+    public static setWebSocketRequest(data: any) {
+
+        activeWorkspaceData.webSocketRequest = data;
+        this.persist()
+
+    }
+    public static getServerUrl(){
+     
+        let serverUrl ;
+        if (isSocketIOConnection()){
+            serverUrl = activeWorkspaceData.socketIOUrl;
+
+        } else {
+            serverUrl = activeWorkspaceData.webSocketUrl;
+        }
+
+        return serverUrl;
 
     }
     public static setServerUrl(url:string){
 
-        activeWorkspaceData.serverUrl = url
+    
+        if (isSocketIOConnection()) {
+             activeWorkspaceData.socketIOUrl = url;
+
+        } else {
+             activeWorkspaceData.webSocketUrl = url;
+        }
+
+     
         this.persist()
 
     }
@@ -161,6 +216,12 @@ export class WorkspaceService {
     }
     public static getRequestHash() {
         return idToRequestHash;
+
+
+
+    }
+    public static getWebSocketRequest() {
+        return activeWorkspaceData.webSocketRequest || defaultWebSocketRequest;
 
 
 
