@@ -419,6 +419,7 @@ function Layout(props: any) {
     }
 
     function CollectionRenderer(props: any) {
+     
         const collection: CollectionFolder | CollectionRequest = props.data;
 
         // handles deleted collections
@@ -428,7 +429,7 @@ function Layout(props: any) {
 
         const isFirstTree = props.tree == undefined
 
-
+  
 
         return (
             <div className='text-color-default cursor'>
