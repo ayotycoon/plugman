@@ -455,7 +455,7 @@ const mapStateToProps = (state: any) => ({
 
     app: state.app,
     notifications: state.notifications,
-    socketIO: state.socketIOIO
+    socketIO: state.socketIO
 })
 
 
