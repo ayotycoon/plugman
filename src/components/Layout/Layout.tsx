@@ -577,7 +577,7 @@ function Layout(props: any) {
                                 </div>
                             </div>
                         </div>
-                            : <div className='p-2'>
+                            : <div className={'p-2 ' + (sidebarMin ? 'd-none' : '')}>
                              <div className='small text-color-default text-center '>
     
                                     Pure Websocket only listens and emits to the "message" event, therefore this is the only event that can be sent and listened to.
