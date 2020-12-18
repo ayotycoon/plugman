@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 
 const  env  =  require('../env.json')
-
+// fixed bug
 const initialState = {}
 const middleware = [thunk]
 
