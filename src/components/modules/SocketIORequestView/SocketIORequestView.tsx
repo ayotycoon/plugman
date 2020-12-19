@@ -215,7 +215,7 @@ function SocketIORequestView(props: any) {
 
 
     async function action(type: string) {
-        if (!props.socketIOIO.status.connected) {
+        if (!props.socketIO.status.connected) {
             toaster({ type: 'danger', message: `<i class='fa fa-info mr-2 '> </i>  You are not connected` })
 
             return
